@@ -6,13 +6,14 @@
 BoardView::BoardView(MainWidget *mwidget, QWidget *parent) : QGraphicsView (parent)
 {
     main_widget = mwidget;
+    //setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 }
 
 
 void BoardView::resizeEvent(QResizeEvent *event) {
     if (event->oldSize().width() == -1) {
-        qreal k = (qreal)qMin(width(), height()) / ((main_widget->cell_size + 4) * main_widget->board_size);
-        std::cerr << height() << std::endl;
+        qreal k = (qreal)qMin(width(), height()) / ((main_widget->config_.scene_cell_size + 4) * main_widget->config_.board_size);
+        //std::cerr << height() << std::endl;
         scale(k, k);
     }
     else {

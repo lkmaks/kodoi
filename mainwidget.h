@@ -4,8 +4,14 @@
 #include <QObject>
 #include <QWidget>
 #include <QLayout>
+#include <QSet>
+#include "abstractboard.h"
 #include "boardscene.h"
 #include "boardview.h"
+#include "explorermode.h"
+#include "boardpainter.h"
+#include "commonmodedatastorage.h"
+#include "config.h"
 
 class MainWidget : public QWidget
 {
@@ -14,38 +20,24 @@ class MainWidget : public QWidget
     friend BoardView;
 
 private:
-    BoardScene *board_scene;
-    BoardView *board_view;
+    BoardScene *board_scene_;
+    BoardView *board_view_;
 
-    int cell_size = 30;
-    int board_size = 15;
-    int stone_gap_factor = 10;
-    QString current_mode;
-    int step = 0;
+    AbstractBoard *board_;
+    BoardPainter *board_painter_;
+    CommonModeDataStorage *storage_;
 
-    QPair<int, int> line_point_a, line_point_b;
-    QVector<QGraphicsItem*> lines;
+    ExplorerMode current_mode_;
+    ExplorerModeDefault *default_mode_;
+    ExplorerModeDrawLine *draw_line_mode_;
 
-    QVector<QVector<int> > board_arr;
-    QVector<QPair<int, int> > position;
-    QVector<QGraphicsItem*> stones;
-    QVector<QGraphicsItem*> numbers;
+    Config config_;
 
-    void init_board_graphics();
-    void init_board_alg();
-
-    void handleLeftClickOn(int i, int j);
-    void handleRightClickOn(int i, int j);
-
-    void addStone(int i, int j);
-    void undo_until(int i, int j);
-    void undo();
-
-    void putStone(int i, int j, int color, int number);
-    void drawLineAB();
 public:
     explicit MainWidget(QWidget *parent = nullptr);
-    void handleBoardSceneMouseEvent(QGraphicsSceneMouseEvent *event);
+    void handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event);
+    void handleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *  event);
+    void handleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void handleBoardSceneKeyEvent(QKeyEvent *event);
 };
 

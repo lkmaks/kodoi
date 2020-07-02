@@ -25,15 +25,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        abstractboard.cpp \
+        boardpainter.cpp \
         boardscene.cpp \
         boardview.cpp \
+        commonmodedatastorage.cpp \
+        explorermode.cpp \
         main.cpp \
         mainwidget.cpp \
         mainwindow.cpp
 
 HEADERS += \
+        abstractboard.h \
+        boardpainter.h \
         boardscene.h \
         boardview.h \
+        commonmodedatastorage.h \
+        config.h \
+        explorermode.h \
         mainwidget.h \
         mainwindow.h
 
