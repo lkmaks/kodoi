@@ -42,14 +42,17 @@ void BoardPainter::PaintEmptyBoard() {
     }
 }
 
-QPair<QGraphicsItem*, QGraphicsItem*> BoardPainter::putStone(int i, int j, int color, int number) {
+QPair<QGraphicsItem*, QGraphicsItem*> BoardPainter::putStone(QPair<int, int> cell, StoneColor color, int number) {
+    int i = cell.first;
+    int j = cell.second;
+
     QPen line_pen(Qt::black);
     line_pen.setCosmetic(true);
     QBrush stone_brush;
     QBrush number_brush;
     stone_brush.setStyle(Qt::SolidPattern);
     number_brush.setStyle(Qt::SolidPattern);
-    if (color == 1) {
+    if (color == BLACK) {
         stone_brush.setColor(Qt::black);
         number_brush.setColor(Qt::white);
     }
@@ -82,8 +85,7 @@ QPair<QGraphicsItem*, QGraphicsItem*> BoardPainter::putStone(int i, int j, int c
         board_scene_->addItem(txt);
     }
 
-    stones_.push_back(QPair<QGraphicsItem*, QGraphicsItem*>(stone, txt));
-    return stones_.back();
+    return QPair<QGraphicsItem*, QGraphicsItem*>(stone, txt);
 }
 
 
@@ -105,3 +107,4 @@ QPair<int, int> BoardPainter::GetCell(QPointF pos) {
 
     return QPair<int, int>(i, j);
 }
+

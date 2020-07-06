@@ -20,46 +20,51 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
 
     board_view_->setBackgroundBrush(QBrush(QColor("#f0dcb7"), Qt::SolidPattern));
 
-    // set up essential board objects (alg and paint)
+    // set up main entities (alg, paint, common storage between modes)
     board_ = new AbstractBoard(config_);
     board_painter_ = new BoardPainter(config_, board_scene_);
+    storage_ = new CommonModeDataStorage();
 
-    // set initial mode
+    // set up mode objects
+    default_mode_ = new ExplorerModeDefault(board_, board_painter_, storage_);
+    draw_line_mode_ = new ExplorerModeDrawLine(board_, board_painter_, storage_);
+
+    // set initial mode: default
     current_mode_ = DEFAULT;
 }
 
 void MainWidget::handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event) {
   if (current_mode_ == DEFAULT) {
-      default_mode_->HandleMousePressEvent(event);
+      current_mode_ = default_mode_->HandleMousePressEvent(event);
   }
   else if (current_mode_ == DRAWLINE) {
-      draw_line_mode_->HandleMousePressEvent(event);
+      current_mode_ = draw_line_mode_->HandleMousePressEvent(event);
   }
 }
 
 void MainWidget::handleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     if (current_mode_ == DEFAULT) {
-        default_mode_->HandleMouseReleaseEvent(event);
+        current_mode_ = default_mode_->HandleMouseReleaseEvent(event);
     }
     else if (current_mode_ == DRAWLINE) {
-        draw_line_mode_->HandleMouseReleaseEvent(event);
+        current_mode_ = draw_line_mode_->HandleMouseReleaseEvent(event);
     }
 }
 
 void MainWidget::handleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     if (current_mode_ == DEFAULT) {
-        default_mode_->HandleMouseMoveEvent(event);
+        current_mode_ = default_mode_->HandleMouseMoveEvent(event);
     }
     else if (current_mode_ == DRAWLINE) {
-        draw_line_mode_->HandleMouseMoveEvent(event);
+        current_mode_ = draw_line_mode_->HandleMouseMoveEvent(event);
     }
 }
 
 void MainWidget::handleBoardSceneKeyEvent(QKeyEvent *event) {
     if (current_mode_ == DEFAULT) {
-        default_mode_->HandleKeyPressEvent(event);
+        current_mode_ = default_mode_->HandleKeyPressEvent(event);
     }
     else if (current_mode_ == DRAWLINE) {
-        draw_line_mode_->HandleKeyPressEvent(event);
+        current_mode_ = draw_line_mode_->HandleKeyPressEvent(event);
     }
 }

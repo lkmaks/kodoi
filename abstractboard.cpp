@@ -9,13 +9,15 @@ AbstractBoard::AbstractBoard(const Config &config) : config_(config)
     }
 }
 
-void AbstractBoard::MakeMove(int i, int j) {
+void AbstractBoard::MakeMove(QPair<int, int> cell) {
+    int i = cell.first;
+    int j = cell.second;
     position.push_back({i, j});
-    Cell cell = WHITESTONE;
+    Cell new_cell = WHITESTONE;
     if (position.size() % 2 == 0) {
-        cell = BLACKSTONE;
+        new_cell = BLACKSTONE;
     }
-    board_arr[i][j] = cell;
+    board_arr[i][j] = new_cell;
 }
 
 QPair<int, int> AbstractBoard::GetLastMove() {
@@ -35,8 +37,8 @@ bool AbstractBoard::Empty() {
     return position.empty();
 }
 
-Cell AbstractBoard::GetCell(int i, int j) {
-    return board_arr[i][j];
+Cell AbstractBoard::GetCell(QPair<int, int> cell) {
+    return board_arr[cell.first][cell.second];
 }
 
 StoneColor AbstractBoard::GetCurrentColor() {

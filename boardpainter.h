@@ -6,6 +6,7 @@
 #include <QPair>
 #include "config.h"
 #include "boardscene.h"
+#include "abstractboard.h"
 
 class BoardPainter
 {
@@ -13,7 +14,7 @@ public:
     BoardPainter(const Config &config, BoardScene *board_scene);
 
     void PaintEmptyBoard();
-    QPair<QGraphicsItem*, QGraphicsItem*> putStone(int i, int j, int color, int number);
+    QPair<QGraphicsItem*, QGraphicsItem*> putStone(QPair<int, int> cell, StoneColor color, int number);
     QGraphicsItem *DrawLineAB(QPair<int, int> a, QPair<int, int> b);
     QPair<int, int> GetCell(QPointF pos);
 
@@ -25,13 +26,6 @@ private:
     int cell_size_;
     int board_size_;
     qreal stone_gap_factor_ = 0;
-
-    // objects groups
-
-    // <stone, text>
-    QVector<QPair<QGraphicsItem*, QGraphicsItem*> > stones_;
-    QVector<QGraphicsItem*> numbers_;
-    QVector<QGraphicsItem*> lines_;
 };
 
 #endif // BOARDPAINTER_H

@@ -4,3 +4,4 @@ CommonModeDataStorage::CommonModeDataStorage()
 {
 
 }
+

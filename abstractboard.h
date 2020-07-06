@@ -22,11 +22,11 @@ public:
 
     QPair<int, int> GetLastMove();
     bool Empty();
-    Cell GetCell(int i, int j);
+    Cell GetCell(QPair<int, int> cell);
     StoneColor GetCurrentColor();
     int MovesCount();
 
-    void MakeMove(int i, int j);
+    void MakeMove(QPair<int, int> cell);
     void UndoLastMove();
 
     static bool IsRenjuLine(QPair<int, int> p1, QPair<int, int> p2);

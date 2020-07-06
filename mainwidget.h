@@ -36,7 +36,7 @@ private:
 public:
     explicit MainWidget(QWidget *parent = nullptr);
     void handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event);
-    void handleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *  event);
+    void handleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void handleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void handleBoardSceneKeyEvent(QKeyEvent *event);
 };
