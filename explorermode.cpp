@@ -1,5 +1,5 @@
 #include "explorermode.h"
-
+#include "enums.h"
 
 ExplorerModeBase::ExplorerModeBase(ExplorerMode mode, AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage) :
     mode_(mode), board_(board), painter_(painter), storage_(storage) {}
@@ -27,21 +27,43 @@ ExplorerMode ExplorerModeBase::HandleKeyPressEvent(QKeyEvent *event) {
     return mode_;
 }
 
+void ExplorerModeBase::RenderMarks() {
+    // delete old marks
+    for (auto mark : storage_->marks) {
+        delete mark;
+    }
+    storage_->marks.clear();
+
+    // draw new marks
+    auto cur_node = board_->tree_->GetCurrentNode();
+    for (auto pos : cur_node->children.keys()) {
+       auto mark = painter_->DrawMoveMark(pos, board_->GetCurrentColor());
+       storage_->marks.push_back(mark);
+    }
+}
 
 void ExplorerModeBase::MakeMove(QPair<int, int> cell) {
-    auto stone_txt_pair = painter_->putStone(cell, board_->GetCurrentColor(), board_->MovesCount() + 1);
-    storage_->stones_buf_pos_.push_back(stone_txt_pair.first);
-    storage_->txt_buf_pos_.push_back(stone_txt_pair.second);
+    // update abstract board
     board_->MakeMove(cell);
+
+    // draw new stone
+    auto stone_txt_pair = painter_->DrawNumberedStone(cell,
+                                                      opposite_color(board_->GetCurrentColor()),
+                                                      board_->MovesCount());
+    storage_->stones_pos.push_back(stone_txt_pair.first);
+    storage_->numbers_pos.push_back(stone_txt_pair.second);
+
+    RenderMarks();
 }
 
 void ExplorerModeBase::Undo() {
     if (!board_->Empty()) {
         board_->UndoLastMove();
-        delete storage_->stones_buf_pos_.back();
-        storage_->stones_buf_pos_.pop_back();
-        delete storage_->txt_buf_pos_.back();
-        storage_->txt_buf_pos_.pop_back();
+        delete storage_->stones_pos.back();
+        storage_->stones_pos.pop_back();
+        delete storage_->numbers_pos.back();
+        storage_->numbers_pos.pop_back();
+        RenderMarks();
     }
 }
 
@@ -49,6 +71,7 @@ void ExplorerModeBase::UndoUntil(QPair<int, int> cell) {
     while (!board_->Empty() && board_->GetLastMove() != cell) {
         Undo();
     }
+    RenderMarks();
 }
 
 
@@ -86,6 +109,7 @@ ExplorerMode ExplorerModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent
 ExplorerModeDrawLine::ExplorerModeDrawLine(AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage) :
     ExplorerModeBase(DRAWLINE, board, painter, storage) {}
 
+
 ExplorerMode ExplorerModeDrawLine::HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     auto cell = painter_->GetCell(event->scenePos());
     if (!board_->IsCell(cell)) {
@@ -105,7 +129,7 @@ ExplorerMode ExplorerModeDrawLine::HandleMouseMoveEvent(QGraphicsSceneMouseEvent
 
 ExplorerMode ExplorerModeDrawLine::HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     (void)event;
-    storage_->lines_.push_back(storage_->pending_line);
+    storage_->lines.push_back(storage_->pending_line);
     storage_->pending_line = nullptr;
     return DEFAULT;
 }

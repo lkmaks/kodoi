@@ -29,6 +29,9 @@ public:
     void MakeMove(QPair<int, int> cell);
     void Undo();
     void UndoUntil(QPair<int, int> cell);
+
+    // auxillary method: update next move marks on the board according to the tree
+    void RenderMarks();
 protected:
     ExplorerMode mode_;
 

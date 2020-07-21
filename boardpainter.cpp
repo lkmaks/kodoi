@@ -6,6 +6,15 @@ BoardPainter::BoardPainter(const Config &config, BoardScene *board_scene) :
     PaintEmptyBoard();
 }
 
+QPair<int, int> BoardPainter::GetCell(QPointF pos) {
+    int x = pos.x(), y = pos.y();
+
+    int i = (x + cell_size_ / 2) / cell_size_;
+    int j = (y + cell_size_ / 2) / cell_size_;
+
+    return QPair<int, int>(i, j);
+}
+
 void BoardPainter::PaintEmptyBoard() {
     QPen line_pen(Qt::black);
     line_pen.setCosmetic(true);
@@ -42,7 +51,7 @@ void BoardPainter::PaintEmptyBoard() {
     }
 }
 
-QPair<QGraphicsItem*, QGraphicsItem*> BoardPainter::putStone(QPair<int, int> cell, StoneColor color, int number) {
+QPair<QGraphicsItem*, QGraphicsItem*> BoardPainter::DrawNumberedStone(QPair<int, int> cell, StoneColor color, int number) {
     int i = cell.first;
     int j = cell.second;
 
@@ -64,7 +73,7 @@ QPair<QGraphicsItem*, QGraphicsItem*> BoardPainter::putStone(QPair<int, int> cel
     //QGraphicsItem *stone = board_scene->addEllipse(cell_size * i - stone_width / 2, cell_size * j - stone_width / 2, stone_width, stone_width, line_pen, stone_brush);
 
     QImage img;
-    if (color == 1) {
+    if (color == BLACK) {
         img = QImage("/home/max/qt_projects/kodoi/b_succ.png");
     }
     else {
@@ -99,12 +108,25 @@ QGraphicsItem *BoardPainter::DrawLineAB(QPair<int, int> line_point_a, QPair<int,
     return line;
 }
 
-QPair<int, int> BoardPainter::GetCell(QPointF pos) {
-    int x = pos.x(), y = pos.y();
+QGraphicsItem *BoardPainter::DrawMoveMark(QPair<int, int> cell, StoneColor color) {
+    int i = cell.first;
+    int j = cell.second;
 
-    int i = (x + cell_size_ / 2) / cell_size_;
-    int j = (y + cell_size_ / 2) / cell_size_;
+    qreal mark_width = cell_size_ / 3;
+    QImage img;
+    if (color == BLACK) {
+        img = QImage("/home/max/qt_projects/kodoi/b_succ.png");
+    }
+    else {
+        img = QImage("/home/max/qt_projects/kodoi/w_succ.png");
+    }
 
-    return QPair<int, int>(i, j);
+    QGraphicsItem *mark = new QGraphicsPixmapItem(QPixmap::fromImage(img));
+
+    mark->setScale((qreal)mark_width / (img.width()));
+    mark->setPos(cell_size_ * i - mark_width / 2 + 0.5, cell_size_ * j - mark_width / 2 + 0.5);
+
+    board_scene_->addItem(mark);
+
+    return mark;
 }
-

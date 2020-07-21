@@ -3,17 +3,8 @@
 
 #include <QVector>
 #include "config.h"
-
-enum StoneColor {
-    WHITE,
-    BLACK
-};
-
-enum Cell {
-    EMPTY,
-    WHITESTONE,
-    BLACKSTONE
-};
+#include "explorertree.h"
+#include "enums.h"
 
 class AbstractBoard
 {
@@ -31,10 +22,14 @@ public:
 
     static bool IsRenjuLine(QPair<int, int> p1, QPair<int, int> p2);
     bool IsCell(QPair<int, int> cell);
+
+    // logically part of the Board responsibility but has its own job and needs to be accessible
+    ExplorerTree *tree_;
 private:
     int board_size_;
-    QVector<QVector<Cell> > board_arr;
-    QVector<QPair<int, int> > position;
+    QVector<QVector<Cell> > board_arr_;
+    QVector<QPair<int, int> > position_;
+
     const Config &config_;
 };
 

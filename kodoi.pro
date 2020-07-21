@@ -30,7 +30,9 @@ SOURCES += \
         boardscene.cpp \
         boardview.cpp \
         commonmodedatastorage.cpp \
+        enums.cpp \
         explorermode.cpp \
+        explorertree.cpp \
         main.cpp \
         mainwidget.cpp \
         mainwindow.cpp
@@ -42,7 +44,9 @@ HEADERS += \
         boardview.h \
         commonmodedatastorage.h \
         config.h \
+        enums.h \
         explorermode.h \
+        explorertree.h \
         mainwidget.h \
         mainwindow.h
 

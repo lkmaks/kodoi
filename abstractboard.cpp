@@ -3,46 +3,50 @@
 AbstractBoard::AbstractBoard(const Config &config) : config_(config)
 {
     board_size_ = config.board_size;
-    board_arr.resize(board_size_);
+    board_arr_.resize(board_size_);
     for (int i = 0; i < board_size_; ++i) {
-        board_arr[i].resize(board_size_);
+        board_arr_[i].resize(board_size_);
     }
+    tree_ = new ExplorerTree();
 }
 
 void AbstractBoard::MakeMove(QPair<int, int> cell) {
+    // assume cell is not taken by one of the current stones
     int i = cell.first;
     int j = cell.second;
-    position.push_back({i, j});
+    position_.push_back({i, j});
     Cell new_cell = WHITESTONE;
-    if (position.size() % 2 == 0) {
+    if (position_.size() % 2 == 0) {
         new_cell = BLACKSTONE;
     }
-    board_arr[i][j] = new_cell;
+    board_arr_[i][j] = new_cell;
+    tree_->MakeMove(cell);
 }
 
 QPair<int, int> AbstractBoard::GetLastMove() {
-    return position.back();
+    return position_.back();
 }
 
 void AbstractBoard::UndoLastMove() {
-   if (!position.empty()) {
-       int i = position.back().first;
-       int j = position.back().second;
-       board_arr[i][j] = EMPTY;
-       position.pop_back();
+   if (!position_.empty()) {
+       int i = position_.back().first;
+       int j = position_.back().second;
+       board_arr_[i][j] = EMPTY;
+       position_.pop_back();
+       tree_->UndoLastMove();
    }
 }
 
 bool AbstractBoard::Empty() {
-    return position.empty();
+    return position_.empty();
 }
 
 Cell AbstractBoard::GetCell(QPair<int, int> cell) {
-    return board_arr[cell.first][cell.second];
+    return board_arr_[cell.first][cell.second];
 }
 
 StoneColor AbstractBoard::GetCurrentColor() {
-    if (position.size() % 2 == 0) {
+    if (position_.size() % 2 == 0) {
         return BLACK;
     }
     else {
@@ -57,7 +61,7 @@ bool AbstractBoard::IsRenjuLine(QPair<int, int> p1, QPair<int, int> p2) {
 }
 
 int AbstractBoard::MovesCount() {
-    return position.size();
+    return position_.size();
 }
 
 bool AbstractBoard::IsCell(QPair<int, int> cell) {

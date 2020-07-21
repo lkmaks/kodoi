@@ -9,19 +9,20 @@ class CommonModeDataStorage
 public:
     CommonModeDataStorage();
 
-    int step = 0;
-    QPair<int, int> mousedown_pos;
+    // stones in order of the position
+    QVector<QGraphicsItem*> stones_pos;
+
+    // numbers for the stones in ascending order
+    QVector<QGraphicsItem*> numbers_pos;
+
+    // lines created with "draw line"
+    QVector<QGraphicsItem*> lines;
+    // draw line variables
     QPair<int, int> line_point_a, line_point_b;
     QGraphicsItem *pending_line = nullptr;
 
-    // objects groups
-    // <stone, text>
-    // stones have numbers 1, 2, ... numbered_stones.size() in text
-    QVector<QGraphicsItem*> stones_buf_pos_;
-    QVector<QGraphicsItem*> txt_buf_pos_;
-    QVector<QGraphicsItem*> numbers_;
-    QVector<QGraphicsItem*> lines_;
-
+    // marks of moves in the tree in current position
+    QVector<QGraphicsItem*> marks;
 };
 
 #endif // COMMONMODEDATASTORAGE_H

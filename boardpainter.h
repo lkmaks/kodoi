@@ -14,9 +14,12 @@ public:
     BoardPainter(const Config &config, BoardScene *board_scene);
 
     void PaintEmptyBoard();
-    QPair<QGraphicsItem*, QGraphicsItem*> putStone(QPair<int, int> cell, StoneColor color, int number);
-    QGraphicsItem *DrawLineAB(QPair<int, int> a, QPair<int, int> b);
+
     QPair<int, int> GetCell(QPointF pos);
+
+    QPair<QGraphicsItem*, QGraphicsItem*> DrawNumberedStone(QPair<int, int> cell, StoneColor color, int number);
+    QGraphicsItem *DrawLineAB(QPair<int, int> a, QPair<int, int> b);
+    QGraphicsItem *DrawMoveMark(QPair<int, int> cell, StoneColor color);
 
 private:
     const Config &config_;
