@@ -3,15 +3,16 @@
 
 #include <QGraphicsView>
 #include <QWidget>
+#include "Config.h"
 
 class MainWidget;
 
 class BoardView : public QGraphicsView
 {
 private:
-    MainWidget *main_widget;
+    const Config *config_;
 public:
-    BoardView(MainWidget *mwidget = nullptr, QWidget *widget = nullptr);
+    BoardView(const Config *config, QWidget *widget = nullptr);
     void resizeEvent(QResizeEvent *event);
 };
 

@@ -1,5 +1,5 @@
-#include "boardscene.h"
-#include "mainwidget.h"
+#include "BoardScene.h"
+#include "MainWidget.h"
 
 BoardScene::BoardScene(MainWidget *mwidget)
 {

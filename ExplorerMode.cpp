@@ -1,11 +1,12 @@
-#include "explorermode.h"
-#include "enums.h"
+#include "ExplorerMode.h"
+#include "Enums.h"
+#include <QDebug>
 
-ExplorerModeBase::ExplorerModeBase(ExplorerMode mode, AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage) :
-    mode_(mode), board_(board), painter_(painter), storage_(storage) {}
+class MainWidget;
 
-ExplorerModeBase::ExplorerModeBase(AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage) :
-    ExplorerModeBase(BASE, board, painter, storage) {}
+ExplorerModeBase::ExplorerModeBase(ExplorerMode mode, ExplorerModeTools tools) :
+    mode_(mode), config_(tools.config), settings_(tools.settings), board_(tools.board),
+    painter_(tools.painter), storage_(tools.storage) {}
 
 ExplorerMode ExplorerModeBase::HandleMousePressEvent(QGraphicsSceneMouseEvent *event) {
     (void)event;
@@ -57,8 +58,8 @@ void ExplorerModeBase::MakeMove(QPair<int, int> cell) {
 }
 
 void ExplorerModeBase::Undo() {
-    if (!board_->Empty()) {
-        board_->UndoLastMove();
+    bool succ = board_->Undo();
+    if (succ) {
         delete storage_->stones_pos.back();
         storage_->stones_pos.pop_back();
         delete storage_->numbers_pos.back();
@@ -74,9 +75,33 @@ void ExplorerModeBase::UndoUntil(QPair<int, int> cell) {
     RenderMarks();
 }
 
+void ExplorerModeBase::Redo() {
+    // update abstract board
+    bool succ = board_->Redo();
 
-ExplorerModeDefault::ExplorerModeDefault(AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage) :
-    ExplorerModeBase(DEFAULT, board, painter, storage) {}
+    if (succ) {
+        // draw new stone
+        auto cell = board_->GetLastMove();
+        auto stone_txt_pair = painter_->DrawNumberedStone(cell,
+                                                          opposite_color(board_->GetCurrentColor()),
+                                                          board_->MovesCount());
+        storage_->stones_pos.push_back(stone_txt_pair.first);
+        storage_->numbers_pos.push_back(stone_txt_pair.second);
+
+        RenderMarks();
+    }
+}
+
+void ExplorerModeBase::SetViewMarks(bool view) {
+    settings_->view_marks = view;
+    if (view) {
+        for (auto mark : storage_->marks) {
+            // TODO: unhide
+        }
+    }
+}
+
+ExplorerModeDefault::ExplorerModeDefault(ExplorerModeTools tools) : ExplorerModeBase(DEFAULT, tools) {}
 
 ExplorerMode ExplorerModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent *event) {
     auto cell = painter_->GetCell(event->scenePos());
@@ -106,8 +131,26 @@ ExplorerMode ExplorerModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent
 }
 
 
-ExplorerModeDrawLine::ExplorerModeDrawLine(AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage) :
-    ExplorerModeBase(DRAWLINE, board, painter, storage) {}
+ExplorerMode ExplorerModeDefault::HandleKeyPressEvent(QKeyEvent *event) {
+    qDebug() << event->key() << "\n";
+    if (event->key() == Qt::Key_C) {
+        // clear temporary objects
+        for (auto line : storage_->lines) {
+            delete line;
+        }
+        storage_->lines.clear();
+    }
+    else if (event->key() == Qt::Key_Left) {
+        Undo();
+    }
+    else if (event->key() == Qt::Key_Right) {
+        Redo();
+    }
+    return DEFAULT;
+}
+
+
+ExplorerModeDrawLine::ExplorerModeDrawLine(ExplorerModeTools tools) : ExplorerModeBase(DRAWLINE, tools) {}
 
 
 ExplorerMode ExplorerModeDrawLine::HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event) {
@@ -121,6 +164,7 @@ ExplorerMode ExplorerModeDrawLine::HandleMouseMoveEvent(QGraphicsSceneMouseEvent
         if (storage_->pending_line) {
             delete storage_->pending_line;
         }
+        qDebug() << storage_->line_point_a << "  " << storage_->line_point_b << "\n";
         storage_->pending_line = painter_->DrawLineAB(storage_->line_point_a, storage_->line_point_b);
     }
     return DRAWLINE;

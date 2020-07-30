@@ -1,18 +1,17 @@
-#include "boardview.h"
+#include "BoardView.h"
 #include <QResizeEvent>
 #include <iostream>
-#include "mainwidget.h"
+#include "MainWidget.h"
 
-BoardView::BoardView(MainWidget *mwidget, QWidget *parent) : QGraphicsView (parent)
+BoardView::BoardView(const Config *config, QWidget *parent) : QGraphicsView (parent), config_(config)
 {
-    main_widget = mwidget;
     //setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 }
 
 
 void BoardView::resizeEvent(QResizeEvent *event) {
     if (event->oldSize().width() == -1) {
-        qreal k = (qreal)qMin(width(), height()) / ((main_widget->config_.scene_cell_size + 4) * main_widget->config_.board_size);
+        qreal k = (qreal)qMin(width(), height()) / ((config_->scene_cell_size + 4) * config_->board_size);
         //std::cerr << height() << std::endl;
         scale(k, k);
     }

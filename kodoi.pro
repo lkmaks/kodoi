@@ -25,30 +25,31 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        abstractboard.cpp \
-        boardpainter.cpp \
-        boardscene.cpp \
-        boardview.cpp \
-        commonmodedatastorage.cpp \
-        enums.cpp \
-        explorermode.cpp \
-        explorertree.cpp \
-        main.cpp \
-        mainwidget.cpp \
-        mainwindow.cpp
+        AbstractBoard.cpp \
+        BoardPainter.cpp \
+        BoardScene.cpp \
+        BoardView.cpp \
+        CommonModeDataStorage.cpp \
+        Enums.cpp \
+        ExplorerMode.cpp \
+        ExplorerTree.cpp \
+        MainWidget.cpp \
+        MainWindow.cpp \
+        main.cpp
 
 HEADERS += \
-        abstractboard.h \
-        boardpainter.h \
-        boardscene.h \
-        boardview.h \
-        commonmodedatastorage.h \
-        config.h \
-        enums.h \
-        explorermode.h \
-        explorertree.h \
-        mainwidget.h \
-        mainwindow.h
+        AbstractBoard.h \
+        BoardPainter.h \
+        BoardScene.h \
+        BoardView.h \
+        CommonModeDataStorage.h \
+        Config.h \
+        Enums.h \
+        ExplorerMode.h \
+        ExplorerTree.h \
+        MainWidget.h \
+        MainWindow.h \
+        Settings.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

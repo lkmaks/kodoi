@@ -1,4 +1,4 @@
-#include "explorertree.h"
+#include "ExplorerTree.h"
 
 ExplorerTree::Node::Node(Node *parent, StoneColor color, QPair<int, int> cell) :
     parent(parent), color(color), cell(cell) {}

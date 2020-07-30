@@ -1,4 +1,4 @@
-#include "commonmodedatastorage.h"
+#include "CommonModeDataStorage.h"
 
 CommonModeDataStorage::CommonModeDataStorage()
 {

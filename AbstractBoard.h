@@ -2,14 +2,14 @@
 #define RENJUBOARD_H
 
 #include <QVector>
-#include "config.h"
-#include "explorertree.h"
-#include "enums.h"
+#include "Config.h"
+#include "ExplorerTree.h"
+#include "Enums.h"
 
 class AbstractBoard
 {
 public:
-    AbstractBoard(const Config &config);
+    AbstractBoard(const Config *config);
 
     QPair<int, int> GetLastMove();
     bool Empty();
@@ -18,7 +18,8 @@ public:
     int MovesCount();
 
     void MakeMove(QPair<int, int> cell);
-    void UndoLastMove();
+    bool Undo();
+    bool Redo();
 
     static bool IsRenjuLine(QPair<int, int> p1, QPair<int, int> p2);
     bool IsCell(QPair<int, int> cell);
@@ -28,9 +29,10 @@ public:
 private:
     int board_size_;
     QVector<QVector<Cell> > board_arr_;
-    QVector<QPair<int, int> > position_;
+    QVector<QPair<int, int> > sequence_;
+    int cur_seq_len_;
 
-    const Config &config_;
+    const Config *config_;
 };
 
 #endif // RENJUBOARD_H

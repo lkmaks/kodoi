@@ -4,14 +4,14 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QPair>
-#include "config.h"
-#include "boardscene.h"
-#include "abstractboard.h"
+#include "Config.h"
+#include "BoardScene.h"
+#include "AbstractBoard.h"
 
 class BoardPainter
 {
 public:
-    BoardPainter(const Config &config, BoardScene *board_scene);
+    BoardPainter(const Config *config, BoardScene *board_scene);
 
     void PaintEmptyBoard();
 
@@ -22,7 +22,7 @@ public:
     QGraphicsItem *DrawMoveMark(QPair<int, int> cell, StoneColor color);
 
 private:
-    const Config &config_;
+    const Config *config_;
     BoardScene *board_scene_;
 
     // parameters of proportions

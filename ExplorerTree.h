@@ -3,7 +3,7 @@
 
 #include <QVector>
 #include <QGraphicsItem>
-#include "enums.h"
+#include "Enums.h"
 
 
 class ExplorerTree

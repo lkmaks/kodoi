@@ -3,9 +3,11 @@
 
 #include <QString>
 #include <QGraphicsSceneMouseEvent>
-#include "abstractboard.h"
-#include "boardpainter.h"
-#include "commonmodedatastorage.h"
+#include <QKeyEvent>
+#include "AbstractBoard.h"
+#include "BoardPainter.h"
+#include "CommonModeDataStorage.h"
+#include "Settings.h"
 
 
 enum ExplorerMode {
@@ -15,11 +17,18 @@ enum ExplorerMode {
 };
 
 
+struct ExplorerModeTools {
+    const Config *config;
+    Settings *settings;
+    AbstractBoard *board;
+    BoardPainter *painter;
+    CommonModeDataStorage *storage;
+};
+
 class ExplorerModeBase {
 public:
-    // auxiliary constructor to initialize different modes in derived classes through it
-    ExplorerModeBase(ExplorerMode mode, AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage);
-    ExplorerModeBase(AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage);
+    // auxiliary constructor to initialize different modes in derived classes using it
+    ExplorerModeBase(ExplorerMode mode, ExplorerModeTools tools);
 
     virtual ExplorerMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual ExplorerMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
@@ -29,12 +38,16 @@ public:
     void MakeMove(QPair<int, int> cell);
     void Undo();
     void UndoUntil(QPair<int, int> cell);
+    void Redo();
+    void SetShowMarks(bool show);
 
     // auxillary method: update next move marks on the board according to the tree
     void RenderMarks();
 protected:
     ExplorerMode mode_;
 
+    const Config *config_;
+    Settings *settings_;
     AbstractBoard *board_;
     BoardPainter *painter_;
     CommonModeDataStorage *storage_;
@@ -43,19 +56,15 @@ protected:
 
 class ExplorerModeDefault : public ExplorerModeBase {
 public:
-    ExplorerModeDefault(AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage);
-//    ExplorerModeDefault(ExplorerMode mode, BoardPainter *board_painter, AbstractBoard *board) :
-//        ExplorerModeBase(mode, board_painter, board) {}
+    ExplorerModeDefault(ExplorerModeTools tools);
     ExplorerMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
-    //ExplorerMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    //ExplorerMode HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    ExplorerMode HandleKeyPressEvent(QKeyEvent *event);
 };
 
 
 class ExplorerModeDrawLine : public ExplorerModeBase {
 public:
-    ExplorerModeDrawLine(AbstractBoard *board, BoardPainter *painter, CommonModeDataStorage *storage);
-    //ExplorerMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
+    ExplorerModeDrawLine(ExplorerModeTools tools);
     ExplorerMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     ExplorerMode HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event);
 };
