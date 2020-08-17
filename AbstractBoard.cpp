@@ -24,9 +24,9 @@ void AbstractBoard::MakeMove(QPair<int, int> cell) {
         sequence_.push_back(cell);
         ++cur_seq_len_;
     }
-    Cell new_cell = WHITESTONE;
+    Cell new_cell = Cell::WHITESTONE;
     if (cur_seq_len_ % 2 == 0) {
-        new_cell = BLACKSTONE;
+        new_cell = Cell::BLACKSTONE;
     }
     board_arr_[cell.first][cell.second] = new_cell;
     tree_->MakeMove(cell);
@@ -39,7 +39,7 @@ QPair<int, int> AbstractBoard::GetLastMove() {
 bool AbstractBoard::Undo() {
    if (cur_seq_len_ > 0) {
        auto cell = sequence_[cur_seq_len_ - 1];
-       board_arr_[cell.first][cell.second] = EMPTY;
+       board_arr_[cell.first][cell.second] = Cell::EMPTY;
        --cur_seq_len_;
        tree_->UndoLastMove();
        return true;
@@ -66,10 +66,10 @@ Cell AbstractBoard::GetCell(QPair<int, int> cell) {
 
 StoneColor AbstractBoard::GetCurrentColor() {
     if (cur_seq_len_ % 2 == 0) {
-        return BLACK;
+        return StoneColor::BLACK;
     }
     else {
-        return WHITE;
+        return StoneColor::WHITE;
     }
 }
 

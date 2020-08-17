@@ -92,14 +92,14 @@ void ExplorerModeBase::Redo() {
     }
 }
 
-void ExplorerModeBase::SetViewMarks(bool view) {
-    settings_->view_marks = view;
-    if (view) {
-        for (auto mark : storage_->marks) {
-            // TODO: unhide
-        }
-    }
-}
+//void ExplorerModeBase::SetViewMarks(bool view) {
+//    settings_->view_marks = view;
+//    if (view) {
+//        for (auto mark : storage_->marks) {
+//            // TODO: unhide
+//        }
+//    }
+//}
 
 ExplorerModeDefault::ExplorerModeDefault(ExplorerModeTools tools) : ExplorerModeBase(DEFAULT, tools) {}
 
@@ -116,7 +116,7 @@ ExplorerMode ExplorerModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent
             return DRAWLINE;
         }
         else {
-            if (board_->GetCell(cell) == EMPTY) {
+            if (board_->GetCell(cell) == Cell::EMPTY) {
                 MakeMove(cell);
             }
             else {
@@ -132,7 +132,6 @@ ExplorerMode ExplorerModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent
 
 
 ExplorerMode ExplorerModeDefault::HandleKeyPressEvent(QKeyEvent *event) {
-    qDebug() << event->key() << "\n";
     if (event->key() == Qt::Key_C) {
         // clear temporary objects
         for (auto line : storage_->lines) {

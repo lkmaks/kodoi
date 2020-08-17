@@ -1,7 +1,7 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
-enum StoneColor {
+enum class StoneColor {
     WHITE,
     BLACK,
     NONE
@@ -9,10 +9,16 @@ enum StoneColor {
 
 StoneColor opposite_color(StoneColor color);
 
-enum Cell {
+enum class Cell {
     EMPTY,
     WHITESTONE,
     BLACKSTONE
+};
+
+enum class Rule {
+    RENJU,
+    GOMOKU,
+    FREESTYLE
 };
 
 #endif // ENUMS_H

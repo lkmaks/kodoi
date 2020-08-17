@@ -4,7 +4,7 @@ ExplorerTree::Node::Node(Node *parent, StoneColor color, QPair<int, int> cell) :
     parent(parent), color(color), cell(cell) {}
 
 ExplorerTree::Node::Node() :
-    parent(nullptr), color(NONE), cell(QPair<int, int>(-1, -1)) {}
+    parent(nullptr), color(StoneColor::NONE), cell(QPair<int, int>(-1, -1)) {}
 
 ExplorerTree::ExplorerTree()
 {

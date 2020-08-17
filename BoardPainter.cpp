@@ -114,7 +114,7 @@ QPair<QGraphicsItem*, QGraphicsItem*> BoardPainter::DrawNumberedStone(QPair<int,
     QBrush number_brush;
     stone_brush.setStyle(Qt::SolidPattern);
     number_brush.setStyle(Qt::SolidPattern);
-    if (color == BLACK) {
+    if (color == StoneColor::BLACK) {
         stone_brush.setColor(Qt::black);
         number_brush.setColor(Qt::white);
     }
@@ -126,7 +126,7 @@ QPair<QGraphicsItem*, QGraphicsItem*> BoardPainter::DrawNumberedStone(QPair<int,
     //QGraphicsItem *stone = board_scene->addEllipse(cell_size * i - stone_width / 2, cell_size * j - stone_width / 2, stone_width, stone_width, line_pen, stone_brush);
 
     QImage img;
-    if (color == BLACK) {
+    if (color == StoneColor::BLACK) {
         img = QImage("/home/max/qt_projects/kodoi/b_succ.png");
     }
     else {
@@ -167,7 +167,7 @@ QGraphicsItem *BoardPainter::DrawMoveMark(QPair<int, int> cell, StoneColor color
 
     qreal mark_width = cell_size_ / 3;
     QImage img;
-    if (color == BLACK) {
+    if (color == StoneColor::BLACK) {
         img = QImage("/home/max/qt_projects/kodoi/b_succ.png");
     }
     else {

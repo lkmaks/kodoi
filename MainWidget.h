@@ -13,7 +13,7 @@
 #include "CommonModeDataStorage.h"
 #include "Config.h"
 #include "Settings.h"
-
+#include "EngineWrapper.h"
 
 class MainWidget : public QWidget
 {

@@ -1,3 +1,6 @@
 kodoi.pro.user
 *.autosave
+*.exe
+tmp/
+garbage.cpp
 

@@ -30,12 +30,14 @@ SOURCES += \
         BoardScene.cpp \
         BoardView.cpp \
         CommonModeDataStorage.cpp \
+        EngineWrapper.cpp \
         Enums.cpp \
         ExplorerMode.cpp \
         ExplorerTree.cpp \
         MainWidget.cpp \
         MainWindow.cpp \
-        main.cpp
+        main.cpp \
+        tmp.cpp
 
 HEADERS += \
         AbstractBoard.h \
@@ -44,12 +46,14 @@ HEADERS += \
         BoardView.h \
         CommonModeDataStorage.h \
         Config.h \
+        EngineWrapper.h \
         Enums.h \
         ExplorerMode.h \
         ExplorerTree.h \
         MainWidget.h \
         MainWindow.h \
-        Settings.h
+        Settings.h \
+        tmp.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

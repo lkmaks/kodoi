@@ -4,6 +4,7 @@
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
+#include <QThread>
 
 MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
 {
@@ -41,6 +42,10 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
 
     // set initial mode: default
     current_mode_ = default_mode_;
+
+    EngineWrapper *wrapper = new EngineWrapper();
+//    QThread::sleep(3);
+//    qDebug() << "after a while: " << wrapper->brain_proc_.processId() << "\n";
 }
 
 void MainWidget::handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event) { 
