@@ -6,9 +6,9 @@
 #include <QKeyEvent>
 #include "AbstractBoard.h"
 #include "BoardPainter.h"
-#include "CommonModeDataStorage.h"
+#include "BoardContextStorage.h"
 #include "Settings.h"
-
+#include "EngineWrapper.h"
 
 enum ExplorerMode {
     BASE,
@@ -22,10 +22,14 @@ struct ExplorerModeTools {
     Settings *settings;
     AbstractBoard *board;
     BoardPainter *painter;
-    CommonModeDataStorage *storage;
+    BoardContextStorage *storage;
+    EngineWrapper *engine_wrapper;
 };
 
-class ExplorerModeBase {
+class ExplorerModeBase : public QObject {
+
+    Q_OBJECT
+
 public:
     // auxiliary constructor to initialize different modes in derived classes using it
     ExplorerModeBase(ExplorerMode mode, ExplorerModeTools tools);
@@ -39,10 +43,17 @@ public:
     void Undo();
     void UndoUntil(QPair<int, int> cell);
     void Redo();
-    void SetShowMarks(bool show);
+    void SetViewMarks(bool show);
+    void StartPondering();
+    void UpdatePonderingPosition();
+    void StopPondering();
 
     // auxillary method: update next move marks on the board according to the tree
     void RenderMarks();
+
+signals:
+    void NeedRestartPondering();
+
 protected:
     ExplorerMode mode_;
 
@@ -50,7 +61,8 @@ protected:
     Settings *settings_;
     AbstractBoard *board_;
     BoardPainter *painter_;
-    CommonModeDataStorage *storage_;
+    BoardContextStorage *storage_;
+    EngineWrapper *engine_wrapper_;
 };
 
 

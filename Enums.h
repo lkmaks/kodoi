@@ -16,9 +16,16 @@ enum class Cell {
 };
 
 enum class Rule {
-    RENJU,
+    FREESTYLE,
     GOMOKU,
-    FREESTYLE
+    RENJU
+};
+
+enum class EngineState {
+    STOPPED,
+    STARTING,
+    ACTIVE,
+    STOPPING
 };
 
 #endif // ENUMS_H

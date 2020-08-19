@@ -26,25 +26,26 @@ CONFIG += c++11
 
 SOURCES += \
         AbstractBoard.cpp \
+        BasicEngineViewer.cpp \
+        BoardContextStorage.cpp \
         BoardPainter.cpp \
         BoardScene.cpp \
         BoardView.cpp \
-        CommonModeDataStorage.cpp \
         EngineWrapper.cpp \
         Enums.cpp \
         ExplorerMode.cpp \
         ExplorerTree.cpp \
         MainWidget.cpp \
         MainWindow.cpp \
-        main.cpp \
-        tmp.cpp
+        main.cpp
 
 HEADERS += \
         AbstractBoard.h \
+        BasicEngineViewer.h \
+        BoardContextStorage.h \
         BoardPainter.h \
         BoardScene.h \
         BoardView.h \
-        CommonModeDataStorage.h \
         Config.h \
         EngineWrapper.h \
         Enums.h \
@@ -52,8 +53,7 @@ HEADERS += \
         ExplorerTree.h \
         MainWidget.h \
         MainWindow.h \
-        Settings.h \
-        tmp.h
+        Settings.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

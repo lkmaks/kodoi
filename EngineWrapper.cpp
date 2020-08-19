@@ -1,5 +1,6 @@
 #include "EngineWrapper.h"
 #include <QDebug>
+#include <QThread>
 #include <stdio.h>
 
 EngineWrapper::EngineWrapper(QObject *parent) : QObject(parent), brain_proc_(this) {
@@ -9,6 +10,7 @@ EngineWrapper::EngineWrapper(QObject *parent) : QObject(parent), brain_proc_(thi
                      this, &EngineWrapper::ProcessFinished);
     QObject::connect(&brain_proc_, &QProcess::readyReadStandardOutput,
                      this, &EngineWrapper::ReadyStandardOutput);
+    wrapper_epoch_id_ = brain_epoch_id_ = 0;
 }
 
 
@@ -19,7 +21,9 @@ void EngineWrapper::Start() {
 }
 
 void EngineWrapper::Stop() {
-    // todo: reinitialization
+    brain_epoch_id_ = wrapper_epoch_id_ = 0;
+    cur_read_string_.clear();
+    cur_nbest_update_ = {};
     brain_proc_.write("END\n");
 }
 
@@ -31,16 +35,16 @@ void EngineWrapper::Stop() {
 void EngineWrapper::Setup(EngineWrapper::EngineSettings new_settings) {
     settings_ = new_settings;
     std::string tmpltee = "INFO show_detail 1\n"
-                      "INFO max_node %\n"
-                      "INFO timeout_match %\n"
-                      "INFO time_left %\n"
-                      "INFO timeout_turn %\n"
-                      "INFO max_depth %\n"
-                      "INFO time_increment %\n"
-                      "INFO caution_factor %\n"
-                      "INFO thread_num %\n"
-                      "INFO hash_size %\n"
-                      "INFO rule %\n";
+                      "INFO max_node %d\n"
+                      "INFO timeout_match %d\n"
+                      "INFO time_left %d\n"
+                      "INFO timeout_turn %d\n"
+                      "INFO max_depth %d\n"
+                      "INFO time_increment %d\n"
+                      "INFO caution_factor %d\n"
+                      "INFO thread_num %d\n"
+                      "INFO hash_size %d\n"
+                      "INFO rule %d\n";
     char buf[50 * 12]; // line_length * lines_cnt
     int len = sprintf(buf,
             tmpltee.c_str(),
@@ -71,9 +75,13 @@ void EngineWrapper::StartThinking(const Position &position, int nbest_num) {
     ++wrapper_epoch_id_;
     QString dims = " " + QString::number(position_.board_height) +
                  + " " + QString::number(position_.board_width) + "\n";
-    brain_proc_.write(dims.toUtf8());
-    brain_proc_.write("yxboard\n");
+    brain_proc_.write(dims.toLocal8Bit());
+
+    brain_proc_.write("yxboard\r\n");
+    qDebug() << "pld:\n" << EngineWrapper::PositionToText(position_) << endl;
     brain_proc_.write(EngineWrapper::PositionToText(position_).toUtf8());
+    brain_proc_.write("done\r\n");
+    brain_proc_.write("yxnbest3\r\n");
 }
 
 void EngineWrapper::StopThinking() {
@@ -93,22 +101,33 @@ void EngineWrapper::ProcessFinished(int exitCode, QProcess::ExitStatus exitStatu
     emit EngineStopped();
 }
 
+#include <iostream>
+
 void EngineWrapper::ReadyStandardOutput() {
+    //qDebug() << "readystd\n";
     int prev_ptr = 0;
     int ptr = cur_read_string_.size();
     cur_read_string_ += QString(brain_proc_.readAllStandardOutput());
+    //std::cerr << cur_read_string_.toStdString() << std::endl;
     while (ptr < cur_read_string_.size()) {
         while (ptr < cur_read_string_.size() && cur_read_string_[ptr] != '\n') {
             ++ptr;
         }
-        ProcessStdLine(cur_read_string_.midRef(prev_ptr, ptr - prev_ptr - 1));
+        if (ptr < cur_read_string_.size()) {
+            // found a line;
+            ProcessStdLine(cur_read_string_.midRef(prev_ptr, ptr - prev_ptr - 1));
+            ++ptr;
+            prev_ptr = ptr;
+        }
     }
+    cur_read_string_.remove(0, prev_ptr);
 }
 
 
 /// main function: process engine output
 
 void EngineWrapper::ProcessStdLine(QStringRef line) {
+    //qDebug() << line << endl;
     if (line.contains("OK")) {
         // new epoch for brain
         // clear residual update data, since we don't know
@@ -146,10 +165,6 @@ void EngineWrapper::ProcessStdLine(QStringRef line) {
         cur_nbest_update_.value = line.mid(val_pos, space_pos - val_pos).toInt();
     }
     else if (line.startsWith("MESSAGE (")) {
-        int val_pos = line.indexOf("VAL:") + 4;
-        int space_pos = line.indexOf(' ', val_pos);
-        cur_nbest_update_.value = line.mid(val_pos, space_pos - val_pos).toInt();
-
         cur_nbest_update_.play_lines.push_back({});
         int from_pos = line.indexOf('[');
         int to_pos = line.indexOf(']');
@@ -163,7 +178,7 @@ void EngineWrapper::ProcessStdLine(QStringRef line) {
 
         auto check_num_slice = line.mid(9); // from the number in brackets
         if (check_num_slice.startsWith(QString::number(nbest_num_))) {
-            emit NbestUpdate(cur_nbest_update_);
+            emit NbestUpdated(cur_nbest_update_);
             cur_nbest_update_ = {};
         }
     }
@@ -176,16 +191,16 @@ void EngineWrapper::ProcessStdLine(QStringRef line) {
 QString EngineWrapper::PositionToText(const Position &pos) {
     QString result;
     // TODO: add a check on whether the engine can use the given position notation
-    int side = 1 + (pos.seq.size() % 2);
-    for (int i = 0; i < pos.seq.size(); ++i) {
-        auto loc = pos.seq[i];
-        side = 2 - side;
+    int side = 1 + (pos.sequence.size() % 2);
+    for (int i = 0; i < pos.sequence.size(); ++i) {
+        auto loc = pos.sequence[i];
+        side = 3 - side;
         result += QString::number(loc.first + 1);
         result += ",";
         result += QString::number(loc.second + 1);
         result += ",";
         result += QString::number(side);
-        result += "\n";
+        result += "\r\n";
     }
     return result;
 }

@@ -32,25 +32,25 @@ public:
 
 
     struct EngineSettings {
-        Rule rule;
-        int thread_num;
-        int caution_factor;
-        int max_node;
-        int max_depth;
-        int hash_size;
+        Rule rule = Rule::RENJU;
+        int thread_num = 1;
+        int caution_factor = 0;
+        int max_node = 500000000;
+        int max_depth = 225;
+        int hash_size = 1048576;
 
         // timeouts are not useful for pondering
         // so will have to set them so that they dont interfere
         // still can be set normal values for playing vs engine
-        int timeout_match; // big
-        int time_left; // big
-        int timeout_turn; // big
-        int time_increment; // 0
+        int timeout_match = 100000000; // big
+        int time_left = 100000000; // big
+        int timeout_turn = 2000000; // big
+        int time_increment = 0; // not needed
     };
 
     struct Position {
         int board_width, board_height;
-        QVector<QPair<int, int> > seq;
+        QVector<QPair<int, int> > sequence;
     };
 
     struct NbestUpdate {
@@ -69,7 +69,6 @@ signals:
     void EngineStarted();
     void EngineStopped();
     void NbestUpdated(const NbestUpdate &update);
-
 private:
     QProcess brain_proc_;
 

@@ -77,6 +77,17 @@ int AbstractBoard::MovesCount() {
     return cur_seq_len_;
 }
 
+EngineWrapper::Position AbstractBoard::GetEngineFormatPosition() {
+   EngineWrapper::Position result;
+   result.board_width = board_size_;
+   result.board_height = board_size_;
+   result.sequence.resize(cur_seq_len_);
+   for (int i = 0; i < cur_seq_len_; ++i) {
+       result.sequence[i] = sequence_[i];
+   }
+   return result;
+}
+
 
 bool AbstractBoard::IsCell(QPair<int, int> cell) {
     int i = cell.first, j = cell.second;

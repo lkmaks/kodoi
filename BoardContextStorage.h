@@ -3,11 +3,12 @@
 
 #include <QPair>
 #include <QGraphicsItem>
+#include "Enums.h"
 
-class CommonModeDataStorage
+class BoardContextStorage
 {
 public:
-    CommonModeDataStorage();
+    BoardContextStorage();
 
     // stones in order of the position
     QVector<QGraphicsItem*> stones_pos;
@@ -23,6 +24,8 @@ public:
 
     // marks of moves in the tree in current position
     QVector<QGraphicsItem*> marks;
+
+    EngineState engine_state = EngineState::STOPPED;
 };
 
 #endif // COMMONMODEDATASTORAGE_H

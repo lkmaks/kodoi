@@ -1,12 +1,14 @@
 #include "ExplorerMode.h"
 #include "Enums.h"
 #include <QDebug>
+#include <QEventLoop>
+#include "Enums.h"
 
 class MainWidget;
 
 ExplorerModeBase::ExplorerModeBase(ExplorerMode mode, ExplorerModeTools tools) :
     mode_(mode), config_(tools.config), settings_(tools.settings), board_(tools.board),
-    painter_(tools.painter), storage_(tools.storage) {}
+    painter_(tools.painter), storage_(tools.storage), engine_wrapper_(tools.engine_wrapper) {}
 
 ExplorerMode ExplorerModeBase::HandleMousePressEvent(QGraphicsSceneMouseEvent *event) {
     (void)event;
@@ -55,16 +57,19 @@ void ExplorerModeBase::MakeMove(QPair<int, int> cell) {
     storage_->numbers_pos.push_back(stone_txt_pair.second);
 
     RenderMarks();
+    UpdatePonderingPosition();
 }
 
 void ExplorerModeBase::Undo() {
     bool succ = board_->Undo();
     if (succ) {
+        // really commiting undo
         delete storage_->stones_pos.back();
         storage_->stones_pos.pop_back();
         delete storage_->numbers_pos.back();
         storage_->numbers_pos.pop_back();
         RenderMarks();
+        UpdatePonderingPosition();
     }
 }
 
@@ -73,6 +78,7 @@ void ExplorerModeBase::UndoUntil(QPair<int, int> cell) {
         Undo();
     }
     RenderMarks();
+    UpdatePonderingPosition();
 }
 
 void ExplorerModeBase::Redo() {
@@ -89,7 +95,36 @@ void ExplorerModeBase::Redo() {
         storage_->numbers_pos.push_back(stone_txt_pair.second);
 
         RenderMarks();
+        UpdatePonderingPosition();
     }
+}
+
+void ExplorerModeBase::StartPondering() {
+    storage_->engine_state = EngineState::STARTING;
+    engine_wrapper_->Start();
+    QEventLoop loop;
+    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, &loop, &QEventLoop::quit);
+    loop.exec();
+    storage_->engine_state = EngineState::ACTIVE;
+    engine_wrapper_->Setup({});
+    engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 1);
+}
+
+void ExplorerModeBase::UpdatePonderingPosition() {
+    if (storage_->engine_state == EngineState::ACTIVE) {
+        engine_wrapper_->StopThinking();
+        engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 1);
+    }
+}
+
+void ExplorerModeBase::StopPondering() {
+    storage_->engine_state = EngineState::STOPPING;
+    engine_wrapper_->StopThinking();
+    engine_wrapper_->Stop();
+    QEventLoop loop;
+    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStopped, &loop, &QEventLoop::quit);
+    loop.exec();
+    storage_->engine_state = EngineState::STOPPED;
 }
 
 //void ExplorerModeBase::SetViewMarks(bool view) {
@@ -124,7 +159,7 @@ ExplorerMode ExplorerModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent
             }
         }
     }
-    else {
+    else if (event->button() == Qt::RightButton) {
         Undo();
     }
     return DEFAULT;
@@ -144,6 +179,14 @@ ExplorerMode ExplorerModeDefault::HandleKeyPressEvent(QKeyEvent *event) {
     }
     else if (event->key() == Qt::Key_Right) {
         Redo();
+    }
+    else if (event->key() == Qt::Key_P) {
+        if (storage_->engine_state == EngineState::STOPPED) {
+            StartPondering();
+        }
+        else if (storage_->engine_state == EngineState::ACTIVE) {
+            StopPondering();
+        }
     }
     return DEFAULT;
 }
