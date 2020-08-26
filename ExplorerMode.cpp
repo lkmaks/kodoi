@@ -100,11 +100,14 @@ void ExplorerModeBase::Redo() {
 }
 
 void ExplorerModeBase::StartPondering() {
+    qDebug() << "StartPondering\n";
     storage_->engine_state = EngineState::STARTING;
     engine_wrapper_->Start();
     QEventLoop loop;
     QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, &loop, &QEventLoop::quit);
+    qDebug() << "Before loop\n";
     loop.exec();
+    qDebug() << "After loop\n";
     storage_->engine_state = EngineState::ACTIVE;
     engine_wrapper_->Setup({});
     engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 1);
@@ -118,12 +121,10 @@ void ExplorerModeBase::UpdatePonderingPosition() {
 }
 
 void ExplorerModeBase::StopPondering() {
+    qDebug() << "StopPondering\n";
     storage_->engine_state = EngineState::STOPPING;
     engine_wrapper_->StopThinking();
-    engine_wrapper_->Stop();
-    QEventLoop loop;
-    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStopped, &loop, &QEventLoop::quit);
-    loop.exec();
+    engine_wrapper_->ForceStop();
     storage_->engine_state = EngineState::STOPPED;
 }
 
@@ -181,6 +182,7 @@ ExplorerMode ExplorerModeDefault::HandleKeyPressEvent(QKeyEvent *event) {
         Redo();
     }
     else if (event->key() == Qt::Key_P) {
+        qDebug() << "pressed P" << endl;
         if (storage_->engine_state == EngineState::STOPPED) {
             StartPondering();
         }

@@ -15,6 +15,8 @@
 #include "Settings.h"
 #include "EngineWrapper.h"
 #include "BasicEngineViewer.h"
+#include "BoardLayout.h"
+
 
 class MainWidget : public QWidget
 {

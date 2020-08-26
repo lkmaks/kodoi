@@ -1,7 +1,7 @@
 #include "BoardPainter.h"
 
 BoardPainter::BoardPainter(const Config *config, BoardScene *board_scene) :
-    config_(config), board_scene_(board_scene), cell_size_(config->scene_cell_size),
+    config_(config), board_scene_(board_scene), cell_size_(config->board_scene_cell_size),
     board_size_(config->board_size) {
 
     PaintEmptyBoard();

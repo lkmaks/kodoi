@@ -28,9 +28,11 @@ SOURCES += \
         AbstractBoard.cpp \
         BasicEngineViewer.cpp \
         BoardContextStorage.cpp \
+        BoardLayout.cpp \
         BoardPainter.cpp \
         BoardScene.cpp \
         BoardView.cpp \
+        ColorBar.cpp \
         EngineWrapper.cpp \
         Enums.cpp \
         ExplorerMode.cpp \
@@ -43,9 +45,11 @@ HEADERS += \
         AbstractBoard.h \
         BasicEngineViewer.h \
         BoardContextStorage.h \
+        BoardLayout.h \
         BoardPainter.h \
         BoardScene.h \
         BoardView.h \
+        ColorBar.h \
         Config.h \
         EngineWrapper.h \
         Enums.h \

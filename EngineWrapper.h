@@ -17,7 +17,8 @@ public:
 
     // process-related
     void Start();
-    void Stop();
+    void Stop(); // not working so good (why??)
+    void ForceStop();
 
     void Setup(EngineWrapper::EngineSettings new_settings);
 
@@ -59,18 +60,20 @@ public:
             QVector<QPair<QChar, int> > line;
         };
 
+        StoneColor thinking_as; // color for who this evaluation is provided
         int epoch_id; // which start_thinking is this update for
         int value;
         QPair<int, int> depth_range;
         QVector<PlayLine> play_lines;
     };
 
+    QProcess brain_proc_;
+
 signals:
     void EngineStarted();
     void EngineStopped();
     void NbestUpdated(const NbestUpdate &update);
 private:
-    QProcess brain_proc_;
 
     // set up by user
     EngineSettings settings_;

@@ -7,6 +7,10 @@
 #include <QThread>
 #include <QEventLoop>
 #include <QBoxLayout>
+#include <QPushButton>
+#include <QTextEdit>
+#include "ColorBar.h"
+
 
 MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
 {
@@ -21,20 +25,22 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
     engine_wrapper_ = new EngineWrapper(this);
 
     // set up grid of this widget
-    QBoxLayout *box = new QBoxLayout(QBoxLayout::Direction::LeftToRight);
-    setLayout(box);
+    auto lt = new BoardLayout();
+    setLayout(lt);
 
-    // set up view widgets
     board_view_ = new BoardView(config_, this);
-    layout()->addWidget(board_view_);
+    lt->addWidget(board_view_, BoardLayout::Board);
     board_view_->setScene(board_scene_);
+    //lt->addWidget(new QTextEdit(this), BoardLayout::Board);
 
-    engine_viewer_ = new BasicEngineViewer(this);
-    layout()->addWidget(engine_viewer_);
+    ColorBar *color_bar_ = new ColorBar(config_, this);
+    lt->addWidget(color_bar_, BoardLayout::Bar);
 
-    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, engine_viewer_, &BasicEngineViewer::PonderingStarted);
-    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStopped, engine_viewer_, &BasicEngineViewer::PonderingStopped);
-    QObject::connect(engine_wrapper_, &EngineWrapper::NbestUpdated, engine_viewer_, &BasicEngineViewer::NbestUpdated);
+    qDebug() << "ColorBar size: " << color_bar_->size() << endl;
+
+//    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, engine_viewer_, &BasicEngineViewer::PonderingStarted);
+//    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStopped, engine_viewer_, &BasicEngineViewer::PonderingStopped);
+    QObject::connect(engine_wrapper_, &EngineWrapper::NbestUpdated, color_bar_, &ColorBar::NbestUpdated);
 
     // set up mode objects and with tools for them
     ExplorerModeTools tools;
@@ -53,20 +59,23 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
 
     // example:
 //    EngineWrapper *wrapper = new EngineWrapper();
+
 //    QEventLoop loop;
 //    QObject::connect(wrapper, &EngineWrapper::EngineStarted, &loop, &QEventLoop::quit);
 //    wrapper->Start();
 //    loop.exec();
+
 //    wrapper->Setup({});
 //    EngineWrapper::Position pos;
 //    pos.board_width = pos.board_height = 15;
-//    pos.seq = {{7,7}, {6,7}, {5, 9}};
+//    pos.sequence = {{7,7}, {6,7}, {5, 9}};
 //    wrapper->StartThinking(pos, 3);
-//    loop.connect(wrapper, &EngineWrapper::NbestUpdated, [](const EngineWrapper::NbestUpdate &upd) {
-//        qDebug() << upd.value << endl;
-//    });
+//    wrapper->StopThinking();
+//    wrapper->Stop();
+//    QObject::connect(wrapper, &EngineWrapper::EngineStopped, &loop, &QEventLoop::quit);
 //    loop.exec();
-//    qDebug() << "ALALALALAALALA" << endl;
+
+    qDebug() << "mainwidget constructor done" << endl;
 }
 
 void MainWidget::handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event) { 

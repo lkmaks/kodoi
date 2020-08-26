@@ -13,7 +13,9 @@ private:
     const Config *config_;
 public:
     BoardView(const Config *config, QWidget *widget = nullptr);
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
+//    int heightForWidth(int w) const override;
+//    bool hasHeightForWidth() const override;
 };
 
 #endif // BOARDVIEW_H

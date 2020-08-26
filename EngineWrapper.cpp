@@ -18,18 +18,27 @@ EngineWrapper::EngineWrapper(QObject *parent) : QObject(parent), brain_proc_(thi
 
 void EngineWrapper::Start() {
     brain_proc_.start("/usr/bin/wine", {"/home/max/qt_projects/kodoi/engine.exe"});
+    //brain_proc_.start("/home/max/yixinprotocol/engine2.py");
+    qDebug() << "proc id: " << brain_proc_.pid() << endl;
 }
 
 void EngineWrapper::Stop() {
+    qDebug() << "EngineWraper::Stop()\n";
     brain_epoch_id_ = wrapper_epoch_id_ = 0;
     cur_read_string_.clear();
     cur_nbest_update_ = {};
-    brain_proc_.write("END\n");
+
+    qDebug() << "end: " << brain_proc_.write("END\r\n") << endl;
 }
 
-// TODO: ForceStop
+void EngineWrapper::ForceStop() {
+    brain_epoch_id_ = wrapper_epoch_id_ = 0;
+    cur_read_string_.clear();
+    cur_nbest_update_ = {};
 
-
+    brain_proc_.kill();
+    brain_proc_.waitForFinished();
+}
 /// async thinking/setup interface methods:
 
 void EngineWrapper::Setup(EngineWrapper::EngineSettings new_settings) {
@@ -58,34 +67,34 @@ void EngineWrapper::Setup(EngineWrapper::EngineSettings new_settings) {
             settings_.thread_num,
             settings_.hash_size,
             settings_.rule);
-    qDebug() << "settings payload: \n";
-    qDebug() << buf;
-    brain_proc_.write(buf, len);
+//    qDebug() << "settings payload: \n";
+//    qDebug() << buf;
+    qDebug() << "settings: " << brain_proc_.write(buf, len) << endl;
 }
 
 void EngineWrapper::StartThinking(const Position &position, int nbest_num) {
     nbest_num_ = nbest_num;
     position_ = position;
     if (wrapper_epoch_id_ == 0) {
-        brain_proc_.write("START");
+        qDebug() << "Start: " << brain_proc_.write("START") << endl;;
     }
     else {
-        brain_proc_.write("RESTART");
+        qDebug() << "Restart: " << brain_proc_.write("RESTART") << endl;
     }
     ++wrapper_epoch_id_;
     QString dims = " " + QString::number(position_.board_height) +
-                 + " " + QString::number(position_.board_width) + "\n";
-    brain_proc_.write(dims.toLocal8Bit());
+                 + " " + QString::number(position_.board_width) + "\r\n";
+    qDebug() << "dims: " << brain_proc_.write(dims.toLocal8Bit()) << endl;
 
-    brain_proc_.write("yxboard\r\n");
-    qDebug() << "pld:\n" << EngineWrapper::PositionToText(position_) << endl;
-    brain_proc_.write(EngineWrapper::PositionToText(position_).toUtf8());
-    brain_proc_.write("done\r\n");
-    brain_proc_.write("yxnbest3\r\n");
+    qDebug() << "yxboard: " << brain_proc_.write("yxboard\r\n") << endl;
+    //qDebug() << "pld:\n" << EngineWrapper::PositionToText(position_) << endl;
+    qDebug() << "Pos: " << brain_proc_.write(EngineWrapper::PositionToText(position_).toUtf8()) << endl;
+    qDebug() << "Done: " << brain_proc_.write("done\r\n") << endl;
+    qDebug() << "Nbest: " << brain_proc_.write("yxnbest3\r\n") << endl;
 }
 
 void EngineWrapper::StopThinking() {
-    brain_proc_.write("yxstop\n");
+    qDebug() << "yxstop: " << brain_proc_.write("yxstop\r\n") << endl;
 }
 
 
@@ -98,6 +107,7 @@ void EngineWrapper::ProcessStarted() {
 void EngineWrapper::ProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     Q_UNUSED(exitCode);
     Q_UNUSED(exitStatus);
+    qDebug() << "process finished" << endl;
     emit EngineStopped();
 }
 
@@ -127,7 +137,7 @@ void EngineWrapper::ReadyStandardOutput() {
 /// main function: process engine output
 
 void EngineWrapper::ProcessStdLine(QStringRef line) {
-    //qDebug() << line << endl;
+    qDebug() << line << endl;
     if (line.contains("OK")) {
         // new epoch for brain
         // clear residual update data, since we don't know
@@ -178,6 +188,8 @@ void EngineWrapper::ProcessStdLine(QStringRef line) {
 
         auto check_num_slice = line.mid(9); // from the number in brackets
         if (check_num_slice.startsWith(QString::number(nbest_num_))) {
+            cur_nbest_update_.thinking_as = (position_.sequence.size() % 2 == 0 ?
+                                                 StoneColor::BLACK : StoneColor::WHITE);
             emit NbestUpdated(cur_nbest_update_);
             cur_nbest_update_ = {};
         }
