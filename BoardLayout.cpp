@@ -72,7 +72,7 @@ void BoardLayout::setGeometry(const QRect &rect)
             e->item->setGeometry({50, 50, d, d});
         }
         else if (e->position == Bar) {
-            e->item->setGeometry({50 + d + 25, 50, 50, d});
+            e->item->setGeometry({50 + d + 25, 50, 60, d});
         }
     }
 }

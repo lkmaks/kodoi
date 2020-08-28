@@ -48,13 +48,20 @@ ColorBar::ColorBar(Config *config, QWidget *parent) :
     black_->setGeometry(0, bar_half_h, bar_w, bar_half_h);
     scene_->addItem(black_);
 
-    top_black_text_ = new QGraphicsTextItem();
+    top_black_text_ = new QGraphicsTextItem("aha");
+    top_black_text_->setScale(0.9);
     top_black_text_->setDefaultTextColor(Qt::black);
-    top_black_text_->setPos(bar_w / 4, 15);
+    top_black_text_->setPos(bar_w / 8, 15);
+    top_black_text_->setZValue(3);
+    top_black_text_->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    scene_->addItem(top_black_text_);
 
-    bot_white_text_ = new QGraphicsTextItem();
+    bot_white_text_ = new QGraphicsTextItem("hah");
     bot_white_text_->setDefaultTextColor(Qt::white);
-    bot_white_text_->setPos(bar_w / 4, 15);
+    bot_white_text_->setPos(bar_w / 4, 2 * bar_half_h - 65);
+    bot_white_text_->setZValue(3);
+    bot_white_text_->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    scene_->addItem(bot_white_text_);
 
     level_ = 0;
 }
