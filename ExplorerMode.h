@@ -4,26 +4,18 @@
 #include <QString>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
-#include "AbstractBoard.h"
-#include "BoardPainter.h"
-#include "BoardContextStorage.h"
-#include "Settings.h"
-#include "EngineWrapper.h"
+//#include "AbstractBoard.h"
+//#include "BoardPainter.h"
+//#include "BoardContextStorage.h"
+//#include "Settings.h"
+//#include "EngineWrapper.h"
+#include "BoardTools.h"
 
-enum ExplorerMode {
+
+enum class ExplorerMode {
     BASE,
     DEFAULT,
     DRAWLINE
-};
-
-
-struct ExplorerModeTools {
-    const Config *config;
-    Settings *settings;
-    AbstractBoard *board;
-    BoardPainter *painter;
-    BoardContextStorage *storage;
-    EngineWrapper *engine_wrapper;
 };
 
 class ExplorerModeBase : public QObject {
@@ -32,7 +24,7 @@ class ExplorerModeBase : public QObject {
 
 public:
     // auxiliary constructor to initialize different modes in derived classes using it
-    ExplorerModeBase(ExplorerMode mode, ExplorerModeTools tools);
+    ExplorerModeBase(ExplorerMode mode, BoardTools tools);
 
     virtual ExplorerMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual ExplorerMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
@@ -68,7 +60,7 @@ protected:
 
 class ExplorerModeDefault : public ExplorerModeBase {
 public:
-    ExplorerModeDefault(ExplorerModeTools tools);
+    ExplorerModeDefault(BoardTools tools);
     ExplorerMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
     ExplorerMode HandleKeyPressEvent(QKeyEvent *event);
 };
@@ -76,7 +68,7 @@ public:
 
 class ExplorerModeDrawLine : public ExplorerModeBase {
 public:
-    ExplorerModeDrawLine(ExplorerModeTools tools);
+    ExplorerModeDrawLine(BoardTools tools);
     ExplorerMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     ExplorerMode HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event);
 };

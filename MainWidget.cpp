@@ -5,11 +5,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QThread>
-#include <QEventLoop>
-#include <QBoxLayout>
-#include <QPushButton>
-#include <QTextEdit>
 #include "ColorBar.h"
+#include "EngineWrapper.h"
 
 
 MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
@@ -36,46 +33,30 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
     ColorBar *color_bar_ = new ColorBar(config_, this);
     lt->addWidget(color_bar_, BoardLayout::Bar);
 
-    qDebug() << "ColorBar size: " << color_bar_->size() << endl;
-
-//    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, engine_viewer_, &BasicEngineViewer::PonderingStarted);
-//    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStopped, engine_viewer_, &BasicEngineViewer::PonderingStopped);
-    QObject::connect(engine_wrapper_, &EngineWrapper::NbestUpdated, color_bar_, &ColorBar::NbestUpdated);
-
-    // set up mode objects and with tools for them
-    ExplorerModeTools tools;
+    // create tools for high-entity managers
+    BoardTools tools;
     tools.config = config_;
     tools.settings = settings_;
     tools.board = board_;
     tools.painter = painter_;
     tools.storage = storage_;
     tools.engine_wrapper = engine_wrapper_;
+    tools.color_bar = color_bar_;
+
+    engine_viewer_ = new EngineViewer(tools);
+
+//    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, engine_viewer_, &BasicEngineViewer::PonderingStarted);
+//    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStopped, engine_viewer_, &BasicEngineViewer::PonderingStopped);
+    QObject::connect(engine_wrapper_, &EngineWrapper::NbestUpdated,
+                     engine_viewer_, &EngineViewer::NbestUpdated);
+
+
 
     default_mode_ = new ExplorerModeDefault(tools);
     draw_line_mode_ = new ExplorerModeDrawLine(tools);
 
     // set initial mode: default
     current_mode_ = default_mode_;
-
-    // example:
-//    EngineWrapper *wrapper = new EngineWrapper();
-
-//    QEventLoop loop;
-//    QObject::connect(wrapper, &EngineWrapper::EngineStarted, &loop, &QEventLoop::quit);
-//    wrapper->Start();
-//    loop.exec();
-
-//    wrapper->Setup({});
-//    EngineWrapper::Position pos;
-//    pos.board_width = pos.board_height = 15;
-//    pos.sequence = {{7,7}, {6,7}, {5, 9}};
-//    wrapper->StartThinking(pos, 3);
-//    wrapper->StopThinking();
-//    wrapper->Stop();
-//    QObject::connect(wrapper, &EngineWrapper::EngineStopped, &loop, &QEventLoop::quit);
-//    loop.exec();
-
-    qDebug() << "mainwidget constructor done" << endl;
 }
 
 void MainWidget::handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event) { 
@@ -95,10 +76,10 @@ void MainWidget::handleBoardSceneKeyEvent(QKeyEvent *event) {
 }
 
 ExplorerModeBase *MainWidget::TranslateModeToPtr(ExplorerMode mode) {
-    if (mode == DEFAULT) {
+    if (mode == ExplorerMode::DEFAULT) {
         return default_mode_;
     }
-    else if (mode == DRAWLINE) {
+    else if (mode == ExplorerMode::DRAWLINE) {
         return draw_line_mode_;
     }
     else {

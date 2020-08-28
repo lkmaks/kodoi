@@ -6,7 +6,7 @@
 
 class MainWidget;
 
-ExplorerModeBase::ExplorerModeBase(ExplorerMode mode, ExplorerModeTools tools) :
+ExplorerModeBase::ExplorerModeBase(ExplorerMode mode, BoardTools tools) :
     mode_(mode), config_(tools.config), settings_(tools.settings), board_(tools.board),
     painter_(tools.painter), storage_(tools.storage), engine_wrapper_(tools.engine_wrapper) {}
 
@@ -105,9 +105,9 @@ void ExplorerModeBase::StartPondering() {
     engine_wrapper_->Start();
     QEventLoop loop;
     QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, &loop, &QEventLoop::quit);
-    qDebug() << "Before loop\n";
+    //qDebug() << "Before loop\n";
     loop.exec();
-    qDebug() << "After loop\n";
+    //qDebug() << "After loop\n";
     storage_->engine_state = EngineState::ACTIVE;
     engine_wrapper_->Setup({});
     engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 1);
@@ -121,7 +121,7 @@ void ExplorerModeBase::UpdatePonderingPosition() {
 }
 
 void ExplorerModeBase::StopPondering() {
-    qDebug() << "StopPondering\n";
+    //qDebug() << "StopPondering\n";
     storage_->engine_state = EngineState::STOPPING;
     engine_wrapper_->StopThinking();
     engine_wrapper_->ForceStop();
@@ -137,19 +137,20 @@ void ExplorerModeBase::StopPondering() {
 //    }
 //}
 
-ExplorerModeDefault::ExplorerModeDefault(ExplorerModeTools tools) : ExplorerModeBase(DEFAULT, tools) {}
+ExplorerModeDefault::ExplorerModeDefault(BoardTools tools)
+    : ExplorerModeBase(ExplorerMode::DEFAULT, tools) {}
 
 ExplorerMode ExplorerModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent *event) {
     auto cell = painter_->GetCell(event->scenePos());
     if (!board_->IsCell(cell)) {
         // do nothing - its not a click on the board
-        return DEFAULT;
+        return ExplorerMode::DEFAULT;
     }
     if (event->button() == Qt::LeftButton) {
         if (event->modifiers().testFlag(Qt::ShiftModifier)) {
             storage_->line_point_a = cell;
             storage_->line_point_b = cell;
-            return DRAWLINE;
+            return ExplorerMode::DRAWLINE;
         }
         else {
             if (board_->GetCell(cell) == Cell::EMPTY) {
@@ -163,7 +164,7 @@ ExplorerMode ExplorerModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent
     else if (event->button() == Qt::RightButton) {
         Undo();
     }
-    return DEFAULT;
+    return ExplorerMode::DEFAULT;
 }
 
 
@@ -182,7 +183,7 @@ ExplorerMode ExplorerModeDefault::HandleKeyPressEvent(QKeyEvent *event) {
         Redo();
     }
     else if (event->key() == Qt::Key_P) {
-        qDebug() << "pressed P" << endl;
+        //qDebug() << "pressed P" << endl;
         if (storage_->engine_state == EngineState::STOPPED) {
             StartPondering();
         }
@@ -190,18 +191,19 @@ ExplorerMode ExplorerModeDefault::HandleKeyPressEvent(QKeyEvent *event) {
             StopPondering();
         }
     }
-    return DEFAULT;
+    return ExplorerMode::DEFAULT;
 }
 
 
-ExplorerModeDrawLine::ExplorerModeDrawLine(ExplorerModeTools tools) : ExplorerModeBase(DRAWLINE, tools) {}
+ExplorerModeDrawLine::ExplorerModeDrawLine(BoardTools tools)
+    : ExplorerModeBase(ExplorerMode::DRAWLINE, tools) {}
 
 
 ExplorerMode ExplorerModeDrawLine::HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     auto cell = painter_->GetCell(event->scenePos());
     if (!board_->IsCell(cell)) {
         // do nothing - its not a click on the board
-        return DRAWLINE;
+        return ExplorerMode::DRAWLINE;
     }
     if (cell != storage_->line_point_b) {
         storage_->line_point_b = cell;
@@ -211,7 +213,7 @@ ExplorerMode ExplorerModeDrawLine::HandleMouseMoveEvent(QGraphicsSceneMouseEvent
         qDebug() << storage_->line_point_a << "  " << storage_->line_point_b << "\n";
         storage_->pending_line = painter_->DrawLineAB(storage_->line_point_a, storage_->line_point_b);
     }
-    return DRAWLINE;
+    return ExplorerMode::DRAWLINE;
 }
 
 
@@ -219,5 +221,5 @@ ExplorerMode ExplorerModeDrawLine::HandleMouseReleaseEvent(QGraphicsSceneMouseEv
     (void)event;
     storage_->lines.push_back(storage_->pending_line);
     storage_->pending_line = nullptr;
-    return DEFAULT;
+    return ExplorerMode::DEFAULT;
 }

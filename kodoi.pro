@@ -26,13 +26,13 @@ CONFIG += c++11
 
 SOURCES += \
         AbstractBoard.cpp \
-        BasicEngineViewer.cpp \
         BoardContextStorage.cpp \
         BoardLayout.cpp \
         BoardPainter.cpp \
         BoardScene.cpp \
         BoardView.cpp \
         ColorBar.cpp \
+        EngineViewer.cpp \
         EngineWrapper.cpp \
         Enums.cpp \
         ExplorerMode.cpp \
@@ -43,14 +43,15 @@ SOURCES += \
 
 HEADERS += \
         AbstractBoard.h \
-        BasicEngineViewer.h \
         BoardContextStorage.h \
         BoardLayout.h \
         BoardPainter.h \
         BoardScene.h \
+        BoardTools.h \
         BoardView.h \
         ColorBar.h \
         Config.h \
+        EngineViewer.h \
         EngineWrapper.h \
         Enums.h \
         ExplorerMode.h \

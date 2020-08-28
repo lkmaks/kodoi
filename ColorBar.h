@@ -28,10 +28,9 @@ public:
 
     virtual void resizeEvent(QResizeEvent *event);
 
-    void NbestUpdated(const EngineWrapper::NbestUpdate &upd);
-    void SmoothSetLevel(int y);
-
-    qreal ValueToLevelPortion(int val, int val_max);
+    void SmoothSetProportionLevel(qreal y);
+    void SetTopBlackText(const QString &text);
+    void SetBotWhiteText(const QString &text);
 
 private:
     Config *config_;
@@ -48,6 +47,8 @@ private:
     QGraphicsLineItem *mid_line_;
     QGraphicsRectWidget *black_;
     QGraphicsRectWidget *white_;
+    QGraphicsTextItem *top_black_text_;
+    QGraphicsTextItem *bot_white_text_;
 };
 
 #endif // COLORBAR_H

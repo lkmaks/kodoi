@@ -48,6 +48,14 @@ ColorBar::ColorBar(Config *config, QWidget *parent) :
     black_->setGeometry(0, bar_half_h, bar_w, bar_half_h);
     scene_->addItem(black_);
 
+    top_black_text_ = new QGraphicsTextItem();
+    top_black_text_->setDefaultTextColor(Qt::black);
+    top_black_text_->setPos(bar_w / 4, 15);
+
+    bot_white_text_ = new QGraphicsTextItem();
+    bot_white_text_->setDefaultTextColor(Qt::white);
+    bot_white_text_->setPos(bar_w / 4, 15);
+
     level_ = 0;
 }
 
@@ -72,17 +80,8 @@ void ColorBar::resizeEvent(QResizeEvent *event) {
 }
 
 
-void ColorBar::NbestUpdated(const EngineWrapper::NbestUpdate &upd) {
-    qreal y = ValueToLevelPortion(upd.value, 10000);
-    int level = y * bar_half_h;
-    if (upd.thinking_as == StoneColor::WHITE) {
-        level *= -1;
-    }
-    SmoothSetLevel(level);
-}
-
-
-void ColorBar::SmoothSetLevel(int y) {
+void ColorBar::SmoothSetProportionLevel(qreal p) {
+    int y = p * bar_half_h;
     QPropertyAnimation *anim = new QPropertyAnimation(white_, "geometry");
     anim->setDuration(2000);
     anim->setEndValue(QRect(0, 0, bar_w, bar_half_h - y));
@@ -96,39 +95,10 @@ void ColorBar::SmoothSetLevel(int y) {
     anim->start();
 }
 
-qreal ColorBar::ValueToLevelPortion(int val, int val_max) {
-    // if mapping into [-1, 1] bar level, then
-    // [0, 300] -> [0, 0.8]
-    // [300, 600] -> [0.8, 0.9]
-    // [600, val_max] -> [0.9, 1]
-    // all linear, negative analogously
-    // exact numbers may be adjusted
+void ColorBar::SetTopBlackText(const QString &text) {
+    top_black_text_->setPlainText(text);
+}
 
-    int val1 = 300;
-    int val2 = 600;
-
-    QVector<QPair<int, qreal> > points;
-    points.push_back({-val_max, -1});
-    points.push_back({-val2, -0.9});
-    points.push_back({-val1, -0.8});
-    points.push_back({0, 0});
-    points.push_back({val1, 0.8});
-    points.push_back({val2, 0.9});
-    points.push_back({val_max, 1});
-
-    int i = 0;
-    while (i < points.size() && points[i].first <= val) {
-        ++i;
-    }
-    if (i == points.size()) {
-        // val == val_max
-        --i;
-    }
-
-    auto left = points[i - 1];
-    auto right = points[i];
-    qreal k = (right.second - left.second) / (right.first - left.first);
-    qreal res = left.second + k * (val - left.first);
-
-    return res;
+void ColorBar::SetBotWhiteText(const QString &text) {
+    bot_white_text_->setPlainText(text);
 }

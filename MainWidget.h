@@ -9,13 +9,15 @@
 #include "BoardScene.h"
 #include "BoardView.h"
 #include "ExplorerMode.h"
-#include "BoardPainter.h"
-#include "BoardContextStorage.h"
-#include "Config.h"
-#include "Settings.h"
-#include "EngineWrapper.h"
-#include "BasicEngineViewer.h"
+#include "EngineViewer.h"
 #include "BoardLayout.h"
+#include "ColorBar.h"
+//#include "BoardPainter.h"
+//#include "BoardContextStorage.h"
+//#include "Config.h"
+//#include "Settings.h"
+//#include "EngineWrapper.h"
+#include "BoardTools.h"
 
 
 class MainWidget : public QWidget
@@ -26,14 +28,19 @@ private:
     Config *config_;
     Settings *settings_;
 
+    // widgets
     BoardView *board_view_;
-    BasicEngineViewer *engine_viewer_;
+    ColorBar *color_bar_;
 
+    // logical board tools
     BoardScene *board_scene_;
     AbstractBoard *board_;
     BoardPainter *painter_;
-    BoardContextStorage *storage_;
     EngineWrapper *engine_wrapper_;
+    BoardContextStorage *storage_;
+
+    // High-entity managers
+    EngineViewer *engine_viewer_;
 
     ExplorerModeBase *current_mode_;
     ExplorerModeDefault *default_mode_;
