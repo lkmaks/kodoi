@@ -8,15 +8,18 @@ void EngineViewer::NbestUpdated(const EngineWrapper::NbestUpdate &upd) {
     if (upd.thinking_as == StoneColor::WHITE) {
         y *= -1;
     }
-    qDebug() << "set to " << y << endl;
+    //qDebug() << "set to " << y << endl;
     tools_.color_bar->SmoothSetProportionLevel(y);
     if (y > 0) {
+        tools_.color_bar->SetTopBlackText("");
         tools_.color_bar->SetBotWhiteText(QString::number(-abs(upd.value)));
     }
     else if (y < 0) {
         tools_.color_bar->SetTopBlackText("+" + QString::number(abs(upd.value)));
+        tools_.color_bar->SetBotWhiteText("");
     }
     else {
+        tools_.color_bar->SetTopBlackText("");
         tools_.color_bar->SetBotWhiteText("0");
     }
 }

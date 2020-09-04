@@ -207,13 +207,14 @@ QString EngineWrapper::PositionToText(const Position &pos) {
     for (int i = 0; i < pos.sequence.size(); ++i) {
         auto loc = pos.sequence[i];
         side = 3 - side;
-        result += QString::number(loc.first + 1);
+        result += QString::number(loc.first);
         result += ",";
-        result += QString::number(loc.second + 1);
+        result += QString::number(loc.second);
         result += ",";
         result += QString::number(side);
         result += "\r\n";
     }
+    qDebug() << "pld: " << result << endl;
     return result;
 }
 

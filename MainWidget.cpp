@@ -11,6 +11,7 @@
 
 MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
 {
+
     config_ = new Config();
     settings_ = new Settings();
 
@@ -28,6 +29,7 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
     board_view_ = new BoardView(config_, this);
     lt->addWidget(board_view_, BoardLayout::Board);
     board_view_->setScene(board_scene_);
+    board_view_->setStyleSheet("border: 0px");
     //lt->addWidget(new QTextEdit(this), BoardLayout::Board);
 
     ColorBar *color_bar_ = new ColorBar(config_, this);

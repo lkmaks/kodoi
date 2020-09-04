@@ -28,10 +28,12 @@ public:
 
     virtual void resizeEvent(QResizeEvent *event);
 
-    void SmoothSetProportionLevel(qreal y);
+    void SmoothSetProportionLevel(qreal p);
+    void RapidSetProportionLevel(qreal p);
     void SetTopBlackText(const QString &text);
     void SetBotWhiteText(const QString &text);
 
+    static void PutTextIntoWidth(QGraphicsTextItem *txt, int w);
 private:
     Config *config_;
 
@@ -44,7 +46,7 @@ private:
 
     QGraphicsRectItem *top_container_;
     QGraphicsRectItem *bot_container_;
-    QGraphicsLineItem *mid_line_;
+    QGraphicsRectItem *mid_rect_;
     QGraphicsRectWidget *black_;
     QGraphicsRectWidget *white_;
     QGraphicsTextItem *top_black_text_;
