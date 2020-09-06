@@ -20,6 +20,9 @@ public:
     QPair<QGraphicsItem*, QGraphicsItem*> DrawNumberedStone(QPair<int, int> cell, StoneColor color, int number);
     QGraphicsItem *DrawLineAB(QPair<int, int> a, QPair<int, int> b);
     QGraphicsItem *DrawMoveMark(QPair<int, int> cell, StoneColor color);
+    QGraphicsItem *DrawEvalCircle(QPair<int, int> cell, QColor color);
+
+    void RemoveItem(QGraphicsItem *item);
 
 private:
     const Config *config_;

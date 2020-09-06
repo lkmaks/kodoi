@@ -19,10 +19,23 @@
 //#include "EngineWrapper.h"
 #include "BoardTools.h"
 
+#include <QTextEdit>
+
 
 class MainWidget : public QWidget
 {
     Q_OBJECT
+
+public:
+    explicit MainWidget(Settings *settings, QWidget *parent = nullptr);
+
+    void AppSettingsUpdated(SettingsField field);
+
+    // should be transfered in a new class / skipped
+    void handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event);
+    void handleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void handleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void handleBoardSceneKeyEvent(QKeyEvent *event);
 
 private:
     Config *config_;
@@ -31,6 +44,7 @@ private:
     // widgets
     BoardView *board_view_;
     ColorBar *color_bar_;
+    InfoWidget *info_widget_;
 
     // logical board tools
     BoardScene *board_scene_;
@@ -46,14 +60,8 @@ private:
     ExplorerModeDefault *default_mode_;
     ExplorerModeDrawLine *draw_line_mode_;
 
+    // utility
     ExplorerModeBase *TranslateModeToPtr(ExplorerMode mode);
-
-public:
-    explicit MainWidget(QWidget *parent = nullptr);
-    void handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event);
-    void handleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void handleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    void handleBoardSceneKeyEvent(QKeyEvent *event);
 };
 
 #endif // MAINWIDGET_H

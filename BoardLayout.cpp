@@ -1,8 +1,8 @@
 #include "BoardLayout.h"
 #include <QDebug>
 
-BoardLayout::BoardLayout(QWidget *parent, int margin, int spacing)
-    : QLayout(parent)
+BoardLayout::BoardLayout(QWidget *parent, Config *config, int margin, int spacing)
+    : QLayout(parent), config_(config)
 {
     setMargin(margin);
     setSpacing(spacing);
@@ -43,12 +43,12 @@ bool BoardLayout::hasHeightForWidth() const
 
 int BoardLayout::count() const
 {
-    return list.size();
+    return list_.size();
 }
 
 QLayoutItem *BoardLayout::itemAt(int index) const
 {
-    ItemWrapper *wrapper = list.value(index);
+    ItemWrapper *wrapper = list_.value(index);
     if (wrapper)
         return wrapper->item;
     else
@@ -66,13 +66,35 @@ void BoardLayout::setGeometry(const QRect &rect)
 {
     qDebug() << "layout setGeometry" << endl;
     QLayout::setGeometry(rect);
-    int d = qMin(rect.width() - 175, rect.height() - 100);
-    for (auto e : list) {
-        if (e->position == Board) {
-            e->item->setGeometry({50, 50, d, d});
+
+    int dhor = rect.width();
+    dhor -= config_->board_layout_bar_width;
+    dhor -= config_->board_layout_hpad1;
+    dhor -= config_->board_layout_hpad2;
+    dhor -= config_->board_layout_info_widget_width;
+
+    int dvert = rect.height();
+    dvert -= 2 * config_->board_layout_vpad;
+
+    int d = qMin(dhor, dvert);
+    int rest_w = (dhor - d);
+
+    for (auto e : list_) {
+        if (e->position == Bar) {
+            e->item->setGeometry({rest_w / 2, config_->board_layout_vpad,
+                                  config_->board_layout_bar_width, d});
         }
-        else if (e->position == Bar) {
-            e->item->setGeometry({50 + d + 25, 50, 60, d});
+        if (e->position == Board) {
+            int x = rest_w / 2 + config_->board_layout_bar_width + config_->board_layout_hpad1;
+            e->item->setGeometry({x, config_->board_layout_vpad,
+                                  d, d});
+        }
+        else if (e->position == InfoWidget) {
+            int x = rest_w / 2 +
+                    config_->board_layout_bar_width + config_->board_layout_hpad1 +
+                    d + config_->board_layout_hpad2;
+            e->item->setGeometry({x, config_->board_layout_vpad,
+                                  config_->board_layout_info_widget_width, d});
         }
     }
 }
@@ -84,8 +106,8 @@ QSize BoardLayout::sizeHint() const
 
 QLayoutItem *BoardLayout::takeAt(int index)
 {
-    if (index >= 0 && index < list.size()) {
-        ItemWrapper *layoutStruct = list.takeAt(index);
+    if (index >= 0 && index < list_.size()) {
+        ItemWrapper *layoutStruct = list_.takeAt(index);
         return layoutStruct->item;
     }
     return 0;
@@ -93,30 +115,30 @@ QLayoutItem *BoardLayout::takeAt(int index)
 
 void BoardLayout::add(QLayoutItem *item, Position position)
 {
-    list.append(new ItemWrapper(item, position));
+    list_.append(new ItemWrapper(item, position));
 }
 
 QSize BoardLayout::calculateSize(SizeType sizeType) const
 {
-    //qDebug() << "calcsize " << (sizeType == MinimumSize) << ": " << endl;
-    int d = 0;
-    for (int i = 0; i < list.size(); ++i) {
-        ItemWrapper *wrapper = list.at(i);
-        Position position = wrapper->position;
-        QLayoutItem *item = wrapper->item;
-
-        QSize item_size = (sizeType == MinimumSize ? item->minimumSize() : item->sizeHint());
-
-        if (position == Board) {
-            d = qMax(d, qMax(item_size.width(),
-                             item_size.height()));
-        }
-        else {
-            d = qMax(d, item_size.height());
-        }
+    int d;
+    if (sizeType == MinimumSize) {
+        d = min_d_;
+    }
+    else {
+        d = want_d_;
     }
 
-    //qDebug() << QSize({50 + d + 25 + 50 + 50, 50 + d + 50}) << endl;;
+    int w = 0;
+    w += config_->board_layout_bar_width;
+    w += config_->board_layout_hpad1;
+    w += d;
+    w += config_->board_layout_hpad2;
+    w += config_->board_layout_info_widget_width;
+    w += config_->board_layout_min_hpad;
 
-    return {50 + d + 25 + 50 + 50, 50 + d + 50};
+    int h = 0;
+    h += config_->board_layout_vpad * 2;
+    h += d;
+
+    return {w, h};
 }

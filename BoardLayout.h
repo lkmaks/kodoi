@@ -3,13 +3,14 @@
 
 #include <QLayout>
 #include <QRect>
+#include "Config.h"
 
 class BoardLayout : public QLayout
 {
 public:
-    enum Position { Board, Bar };
+    enum Position { Board, Bar, InfoWidget };
 
-    explicit BoardLayout(QWidget *parent, int margin = 0, int spacing = -1);
+    explicit BoardLayout(QWidget *parent, Config *config, int margin = 0, int spacing = -1);
     BoardLayout(int spacing = -1);
     ~BoardLayout();
 
@@ -41,7 +42,10 @@ private:
     enum SizeType { MinimumSize, SizeHint };
     QSize calculateSize(SizeType sizeType) const;
 
-    QList<ItemWrapper *> list;
+    Config *config_;
+    int min_d_ = 100;
+    int want_d_ = 100;
+    QList<ItemWrapper *> list_;
 };
 
 #endif // BOARDLAYOUT_H

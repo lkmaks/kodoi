@@ -1,9 +1,31 @@
 #include "EngineViewer.h"
 #include <QDebug>
 
-EngineViewer::EngineViewer(const BoardTools &tools) : tools_(tools) {}
+EngineViewer::EngineViewer(const BoardTools &tools) : tools_(tools) {
+    PonderingStopped();
+}
+
+
+void EngineViewer::PonderingStarted() {
+    tools_.info_widget->SetEngineStateText("pondering started");
+}
+
+
+void EngineViewer::PonderingStopped() {
+    tools_.info_widget->SetEngineStateText("pondering stopped");
+}
+
+
+void EngineViewer::EngineErrorOccured() {
+    tools_.info_widget->SetEngineStateText("engine error");
+}
 
 void EngineViewer::NbestUpdated(const EngineWrapper::NbestUpdate &upd) {
+    if (upd.epoch_id != tools_.storage->pondering_epoch_id) {
+        // old epoch, useless nbest update
+        return;
+    }
+
     qreal y = ValueToPortionLevel(upd.value, 10000);
     if (upd.thinking_as == StoneColor::WHITE) {
         y *= -1;
@@ -22,6 +44,21 @@ void EngineViewer::NbestUpdated(const EngineWrapper::NbestUpdate &upd) {
         tools_.color_bar->SetTopBlackText("");
         tools_.color_bar->SetBotWhiteText("0");
     }
+
+    for (QGraphicsItem *circle : tools_.storage->eval_circles) {
+        tools_.painter->RemoveItem(circle);
+    }
+    tools_.storage->eval_circles.clear();
+
+    for (auto &line : upd.play_lines) {
+        auto circle = tools_.painter->DrawEvalCircle(line.line[0], ValueToEvalCircleColor(line.value, 10000));
+        tools_.storage->eval_circles.push_back(circle);
+    }
+
+    tools_.info_widget->SetEngineStateText("Pondering on: depth " +
+                                           QString::number(upd.depth_range.first) +
+                                           "-" +
+                                           QString::number(upd.depth_range.second));
 }
 
 qreal EngineViewer::ValueToPortionLevel(int val, int val_max) {
@@ -59,4 +96,18 @@ qreal EngineViewer::ValueToPortionLevel(int val, int val_max) {
     qreal res = left.second + k * (val - left.first);
 
     return res;
+}
+
+
+QColor EngineViewer::ValueToEvalCircleColor(int val, int val_max) {
+    qreal q = ValueToPortionLevel(val, val_max);
+    qreal r = 255, g = 255;
+    if (q >= 0) {
+        r -= 255 * q;
+    }
+    else {
+        g -= 255 * abs(q);
+    }
+    qDebug() << "COLOR: " << QColor({(int)r, (int)g, 0, 200}) << endl;
+    return {(int)r, (int)g, 0, 200};
 }

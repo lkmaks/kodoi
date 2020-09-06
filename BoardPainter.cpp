@@ -39,7 +39,7 @@ void BoardPainter::PaintEmptyBoard() {
 
 
     // draw frame
-    QPen background_frame_pen(Qt::darkGreen);
+    QPen background_frame_pen(Qt::black);
     background_frame_pen.setCosmetic(true);
     background_frame_pen.setWidth(4);
 
@@ -182,4 +182,22 @@ QGraphicsItem *BoardPainter::DrawMoveMark(QPair<int, int> cell, StoneColor color
     board_scene_->addItem(mark);
 
     return mark;
+}
+
+QGraphicsItem *BoardPainter::DrawEvalCircle(QPair<int, int> cell, QColor color) {
+    int i = cell.first;
+    int j = cell.second;
+
+    qreal circle_width = cell_size_ - (qreal)cell_size_ * stone_gap_factor_;
+
+    return board_scene_->addEllipse(cell_size_ * i - circle_width / 2,
+                                    cell_size_ * j - circle_width / 2,
+                                    circle_width, circle_width,
+                                    QPen(color), QBrush(color));
+}
+
+
+void BoardPainter::RemoveItem(QGraphicsItem *item) {
+    board_scene_->removeItem(item);
+    delete item;
 }

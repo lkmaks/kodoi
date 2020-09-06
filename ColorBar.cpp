@@ -1,6 +1,7 @@
 #include "ColorBar.h"
 #include <QPropertyAnimation>
 #include <QDebug>
+#include <QtMath>
 
 /// QGraphicsRectWidget
 
@@ -58,13 +59,13 @@ ColorBar::ColorBar(Config *config, QWidget *parent) :
     //top_black_text_->setScale(0.9);
     top_black_text_->setDefaultTextColor(Qt::black);
     top_black_text_->setZValue(3);
-    //top_black_text_->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    top_black_text_->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     scene_->addItem(top_black_text_);
 
     bot_white_text_ = new QGraphicsTextItem();
     bot_white_text_->setDefaultTextColor(Qt::white);
     bot_white_text_->setZValue(3);
-    //bot_white_text_->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    bot_white_text_->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     scene_->addItem(bot_white_text_);
 
     level_ = 0;
@@ -78,7 +79,7 @@ void ColorBar::resizeEvent(QResizeEvent *event) {
         //qDebug() << event->size() << endl;
         int new_w = event->size().width();
         int new_h = event->size().height();
-        qreal k_x = (qreal)new_w / (bar_w * 1.2);
+        qreal k_x = (qreal)new_w / (bar_w);
         qreal k_y = (qreal)new_h / (2 * bar_half_h * 1.03);
         view_->scale(k_x, k_y);
     }
@@ -115,7 +116,7 @@ void ColorBar::SmoothSetProportionLevel(qreal p) {
 void ColorBar::SetTopBlackText(const QString &text) {
     top_black_text_->setPlainText(text);
     PutTextIntoWidth(top_black_text_, bar_w);
-    int vpad = config_->bar_scene_value_vertical_padding;
+    qreal vpad = config_->bar_scene_value_vertical_padding;
     qreal lpad = (bar_w - top_black_text_->sceneBoundingRect().width()) / 2.0;
     top_black_text_->setPos(lpad, vpad);
 }
@@ -123,20 +124,20 @@ void ColorBar::SetTopBlackText(const QString &text) {
 void ColorBar::SetBotWhiteText(const QString &text) {
     bot_white_text_->setPlainText(text);
     PutTextIntoWidth(bot_white_text_, bar_w);
-    int vpad = config_->bar_scene_value_vertical_padding;
-    int lpad = (bar_w - bot_white_text_->sceneBoundingRect().width()) / 2;
-    int text_height = bot_white_text_->sceneBoundingRect().height();
+    qreal vpad = config_->bar_scene_value_vertical_padding;
+    qreal lpad = (bar_w - bot_white_text_->sceneBoundingRect().width()) / 2.0;
+    qreal text_height = bot_white_text_->sceneBoundingRect().height();
     bot_white_text_->setPos(lpad, 2 * bar_half_h - vpad - text_height);
 }
 
 
 void ColorBar::PutTextIntoWidth(QGraphicsTextItem *txt, int w) {
     qDebug() << "PutText" << endl;
-    txt->setFont({"Arial", static_cast<int>(12)});
+    txt->setFont({"Arial", 12});
     int cur_w = txt->sceneBoundingRect().width();
     if (cur_w >= w) {
         qreal cur_pt_size = txt->font().pointSizeF();
-        qreal new_pt_size = cur_pt_size * w / cur_w;
+        qreal new_pt_size = qFloor(cur_pt_size * w / cur_w);
         qDebug() << cur_pt_size << " vs " << new_pt_size << endl;
         txt->setFont({"Arial", static_cast<int>(new_pt_size)});
         qDebug() << txt->font().pointSizeF() << endl;

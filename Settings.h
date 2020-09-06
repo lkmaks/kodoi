@@ -1,9 +1,12 @@
 #ifndef APPSETTINGS_H
 #define APPSETTINGS_H
 
+#include <QString>
+
 struct Settings {
-    bool view_tree_marks = true;
+    bool view_marks = true;
     bool view_numbers = true;
+    QString engine_cmd = "wine /home/max/qt_projects/kodoi/engine.exe";
 };
 
 

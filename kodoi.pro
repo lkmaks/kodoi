@@ -37,6 +37,7 @@ SOURCES += \
         Enums.cpp \
         ExplorerMode.cpp \
         ExplorerTree.cpp \
+        InfoWidget.cpp \
         MainWidget.cpp \
         MainWindow.cpp \
         main.cpp
@@ -56,6 +57,7 @@ HEADERS += \
         Enums.h \
         ExplorerMode.h \
         ExplorerTree.h \
+        InfoWidget.h \
         MainWidget.h \
         MainWindow.h \
         Settings.h

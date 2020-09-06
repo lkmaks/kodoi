@@ -7,33 +7,37 @@
 #include <QThread>
 #include "ColorBar.h"
 #include "EngineWrapper.h"
+#include "InfoWidget.h"
 
-
-MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
+MainWidget::MainWidget(Settings *settings, QWidget *parent) :
+    QWidget(parent), settings_(settings)
 {
-
     config_ = new Config();
-    settings_ = new Settings();
 
     // set up main entities (alg, paint, common storage between modes)
     board_scene_ = new BoardScene(this);
     board_ = new AbstractBoard(config_);
     painter_ = new BoardPainter(config_, board_scene_);
     storage_ = new BoardContextStorage();
-    engine_wrapper_ = new EngineWrapper(this);
+    engine_wrapper_ = new EngineWrapper(settings_->engine_cmd, this);
 
     // set up grid of this widget
-    auto lt = new BoardLayout();
+    auto lt = new BoardLayout(this, config_);
     setLayout(lt);
 
+    // board_view widget
     board_view_ = new BoardView(config_, this);
     lt->addWidget(board_view_, BoardLayout::Board);
     board_view_->setScene(board_scene_);
     board_view_->setStyleSheet("border: 0px");
-    //lt->addWidget(new QTextEdit(this), BoardLayout::Board);
 
+    // color bar widget
     ColorBar *color_bar_ = new ColorBar(config_, this);
     lt->addWidget(color_bar_, BoardLayout::Bar);
+
+    // InfoWidget
+    info_widget_ = new InfoWidget(this);
+    lt->addWidget(info_widget_, BoardLayout::InfoWidget);
 
     // create tools for high-entity managers
     BoardTools tools;
@@ -44,13 +48,14 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
     tools.storage = storage_;
     tools.engine_wrapper = engine_wrapper_;
     tools.color_bar = color_bar_;
+    tools.info_widget = info_widget_;
 
     engine_viewer_ = new EngineViewer(tools);
 
-//    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, engine_viewer_, &BasicEngineViewer::PonderingStarted);
-//    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStopped, engine_viewer_, &BasicEngineViewer::PonderingStopped);
-    QObject::connect(engine_wrapper_, &EngineWrapper::NbestUpdated,
-                     engine_viewer_, &EngineViewer::NbestUpdated);
+    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, engine_viewer_, &EngineViewer::PonderingStarted);
+    QObject::connect(engine_wrapper_, &EngineWrapper::EngineStopped, engine_viewer_, &EngineViewer::PonderingStopped);
+    QObject::connect(engine_wrapper_, &EngineWrapper::ErrorOccured, engine_viewer_, &EngineViewer::EngineErrorOccured);
+    QObject::connect(engine_wrapper_, &EngineWrapper::NbestUpdated, engine_viewer_, &EngineViewer::NbestUpdated);
 
 
 
@@ -61,7 +66,17 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
     current_mode_ = default_mode_;
 }
 
-void MainWidget::handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event) { 
+
+void MainWidget::AppSettingsUpdated(SettingsField field) {
+    if (field == SettingsField::ENGINE_CMD) {
+        engine_wrapper_->ForceStop();
+        storage_->engine_state = EngineState::STOPPED;
+        engine_wrapper_->SetEngineCmd(settings_->engine_cmd);
+        engine_viewer_->PonderingStopped();
+    }
+}
+
+void MainWidget::handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event) {
     current_mode_ = TranslateModeToPtr(current_mode_->HandleMousePressEvent(event));
 }
 
@@ -76,6 +91,9 @@ void MainWidget::handleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void MainWidget::handleBoardSceneKeyEvent(QKeyEvent *event) {
     current_mode_ = TranslateModeToPtr(current_mode_->HandleKeyPressEvent(event));
 }
+
+
+/// utility
 
 ExplorerModeBase *MainWidget::TranslateModeToPtr(ExplorerMode mode) {
     if (mode == ExplorerMode::DEFAULT) {

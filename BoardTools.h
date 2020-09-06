@@ -8,6 +8,8 @@
 #include "BoardContextStorage.h"
 #include "EngineWrapper.h"
 #include "ColorBar.h"
+#include "BoardScene.h"
+#include "InfoWidget.h"
 
 struct BoardTools {
     const Config *config;
@@ -17,6 +19,7 @@ struct BoardTools {
     BoardContextStorage *storage;
     EngineWrapper *engine_wrapper;
     ColorBar *color_bar;
+    InfoWidget *info_widget;
 };
 
 #endif // BOARDTOOLS_H

@@ -13,15 +13,20 @@ public:
     struct Position;
     struct NbestUpdate;
 
-    explicit EngineWrapper(QObject *parent = nullptr);
+    explicit EngineWrapper(QString engine_cmd, QObject *parent = nullptr);
+
+    void SetEngineCmd(const QString &cmd); // will apply for all further Start's
 
     // process-related
     void Start();
-    void Stop(); // not working so good (why??)
+    void Stop(); // not working!!
     void ForceStop();
+    QProcess::ProcessState GetBrainProcessState();
 
+    // push settings to a not thinking (but started) engine
     void Setup(EngineWrapper::EngineSettings new_settings);
 
+    // control thinking of a started engine
     void StartThinking(const Position &position, int nbest_num);
     void StopThinking();
 
@@ -57,7 +62,7 @@ public:
     struct NbestUpdate {
         struct PlayLine {
             int value;
-            QVector<QPair<QChar, int> > line;
+            QVector<QPair<int, int> > line;
         };
 
         StoneColor thinking_as; // color for who this evaluation is provided
@@ -72,8 +77,11 @@ public:
 signals:
     void EngineStarted();
     void EngineStopped();
+    void ErrorOccured();
     void NbestUpdated(const NbestUpdate &update);
 private:
+
+    QString engine_cmd_;
 
     // set up by user
     EngineSettings settings_;
@@ -97,7 +105,7 @@ private:
     void ProcessStarted();
     void ProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
     void ReadyStandardOutput();
-
+    void ProcessErrorOccured(QProcess::ProcessError error);
 };
 
 #endif // ENGINEWRAPPER_H

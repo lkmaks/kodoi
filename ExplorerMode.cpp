@@ -100,28 +100,34 @@ void ExplorerModeBase::Redo() {
 }
 
 void ExplorerModeBase::StartPondering() {
-    qDebug() << "StartPondering\n";
     storage_->engine_state = EngineState::STARTING;
     engine_wrapper_->Start();
+
     QEventLoop loop;
     QObject::connect(engine_wrapper_, &EngineWrapper::EngineStarted, &loop, &QEventLoop::quit);
-    //qDebug() << "Before loop\n";
+    QObject::connect(engine_wrapper_, &EngineWrapper::ErrorOccured, &loop, &QEventLoop::quit);
     loop.exec();
-    //qDebug() << "After loop\n";
+
+    if (engine_wrapper_->GetBrainProcessState() != QProcess::ProcessState::Running) {
+        storage_->engine_state = EngineState::FAILED;
+        return;
+    }
+
     storage_->engine_state = EngineState::ACTIVE;
     engine_wrapper_->Setup({});
-    engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 1);
+    engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 5);
+    storage_->pondering_epoch_id = 1; // starting each time with epoch 1, same as engine will
 }
 
 void ExplorerModeBase::UpdatePonderingPosition() {
     if (storage_->engine_state == EngineState::ACTIVE) {
         engine_wrapper_->StopThinking();
-        engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 1);
+        engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 5);
+        ++storage_->pondering_epoch_id;
     }
 }
 
 void ExplorerModeBase::StopPondering() {
-    //qDebug() << "StopPondering\n";
     storage_->engine_state = EngineState::STOPPING;
     engine_wrapper_->StopThinking();
     engine_wrapper_->ForceStop();

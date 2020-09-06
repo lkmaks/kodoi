@@ -25,7 +25,14 @@ enum class EngineState {
     STOPPED,
     STARTING,
     ACTIVE,
-    STOPPING
+    STOPPING,
+    FAILED
+};
+
+enum class SettingsField {
+    VIEW_MARKS,
+    VIEW_NUMBERS,
+    ENGINE_CMD
 };
 
 #endif // ENUMS_H

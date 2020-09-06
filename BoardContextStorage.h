@@ -26,6 +26,8 @@ public:
     QVector<QGraphicsItem*> marks;
 
     EngineState engine_state = EngineState::STOPPED;
+    int pondering_epoch_id = 0;
+    QVector<QGraphicsItem*> eval_circles;
 };
 
 #endif // COMMONMODEDATASTORAGE_H
