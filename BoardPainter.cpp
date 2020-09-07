@@ -29,7 +29,7 @@ void BoardPainter::PaintEmptyBoard() {
     int background_size_hor = cell_size_ * (board_size_ - 1) + background_bonus_hor;
     int background_size_vert = cell_size_ * (board_size_ - 1) + background_bonus_vert;
 
-    QImage img("/home/max/qt_projects/kodoi/lightwoodbackground.jpg");
+    QImage img(config_->lightwood_background);
     img = img.copy(QRect(0, 0, background_size_hor, background_size_vert));
 
     QGraphicsItem *background = new QGraphicsPixmapItem(QPixmap::fromImage(img));
@@ -127,10 +127,10 @@ QPair<QGraphicsItem*, QGraphicsItem*> BoardPainter::DrawNumberedStone(QPair<int,
 
     QImage img;
     if (color == StoneColor::BLACK) {
-        img = QImage("/home/max/qt_projects/kodoi/b_succ.png");
+        img = QImage(config_->black_stone);
     }
     else {
-        img = QImage("/home/max/qt_projects/kodoi/w_succ.png");
+        img = QImage(config_->white_stone);
     }
     QGraphicsItem *stone = new QGraphicsPixmapItem(QPixmap::fromImage(img));
     stone->setScale((qreal)stone_width / (img.width()) * 1.05);
@@ -168,10 +168,10 @@ QGraphicsItem *BoardPainter::DrawMoveMark(QPair<int, int> cell, StoneColor color
     qreal mark_width = cell_size_ / 3;
     QImage img;
     if (color == StoneColor::BLACK) {
-        img = QImage("/home/max/qt_projects/kodoi/b_succ.png");
+        img = QImage(config_->black_stone);
     }
     else {
-        img = QImage("/home/max/qt_projects/kodoi/w_succ.png");
+        img = QImage(config_->white_stone);
     }
 
     QGraphicsItem *mark = new QGraphicsPixmapItem(QPixmap::fromImage(img));
