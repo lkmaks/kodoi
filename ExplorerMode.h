@@ -31,17 +31,19 @@ public:
     virtual ExplorerMode HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event);
     virtual ExplorerMode HandleKeyPressEvent(QKeyEvent *event);
 
+    virtual ExplorerMode NbestValueChanged(int new_value);
+
     void MakeMove(QPair<int, int> cell);
     void Undo();
     void UndoUntil(QPair<int, int> cell);
     void Redo();
     void SetViewMarks(bool show);
     void StartPondering();
-    void UpdatePonderingPosition();
+    void UpdatePonderingPosition(int nbest_value); // by board
     void StopPondering();
-
-    // auxillary method: update next move marks on the board according to the tree
+    //update next move marks on the board according to the tree
     void RenderMarks();
+
 
 signals:
     void NeedRestartPondering();

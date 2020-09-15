@@ -197,6 +197,21 @@ QGraphicsItem *BoardPainter::DrawEvalCircle(QPair<int, int> cell, QColor color) 
 }
 
 
+QGraphicsItem *BoardPainter::HighlightStoneBorder(QPair<int, int> cell, QColor color) {
+    int i = cell.first;
+    int j = cell.second;
+
+    qreal circle_width = cell_size_ - (qreal)cell_size_ * stone_gap_factor_;
+
+    auto res = board_scene_->addEllipse(cell_size_ * i - circle_width / 2 + 2,
+                                    cell_size_ * j - circle_width / 2 + 2,
+                                    circle_width - 4, circle_width - 4,
+                                    QPen(color, 1.5));
+    res->setZValue(100);
+    return res;
+}
+
+
 void BoardPainter::RemoveItem(QGraphicsItem *item) {
     board_scene_->removeItem(item);
     delete item;

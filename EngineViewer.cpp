@@ -13,6 +13,13 @@ void EngineViewer::PonderingStarted() {
 
 void EngineViewer::PonderingStopped() {
     tools_.info_widget->SetEngineStateText("pondering stopped");
+    for (QGraphicsItem *circle : tools_.storage->eval_circles) {
+        tools_.painter->RemoveItem(circle);
+    }
+    tools_.storage->eval_circles.clear();
+    tools_.color_bar->SmoothSetProportionLevel(0);
+    tools_.color_bar->SetTopBlackText("");
+    tools_.color_bar->SetBotWhiteText("");
 }
 
 

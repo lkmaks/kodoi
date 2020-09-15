@@ -29,6 +29,7 @@ struct Config
     int board_layout_info_widget_width = 300;
     int board_layout_min_hpad = 50;
 
+    int default_nbest_value = 3;
 };
 
 #endif // CONFIG_H

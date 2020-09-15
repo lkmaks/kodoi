@@ -10,6 +10,7 @@ ExplorerModeBase::ExplorerModeBase(ExplorerMode mode, BoardTools tools) :
     mode_(mode), config_(tools.config), settings_(tools.settings), board_(tools.board),
     painter_(tools.painter), storage_(tools.storage), engine_wrapper_(tools.engine_wrapper) {}
 
+
 ExplorerMode ExplorerModeBase::HandleMousePressEvent(QGraphicsSceneMouseEvent *event) {
     (void)event;
     return mode_;
@@ -30,6 +31,14 @@ ExplorerMode ExplorerModeBase::HandleKeyPressEvent(QKeyEvent *event) {
     return mode_;
 }
 
+ExplorerMode ExplorerModeBase::NbestValueChanged(int new_value) {
+    if (storage_->engine_state == EngineState::ACTIVE) {
+        storage_->nbest_value = new_value;
+        UpdatePonderingPosition(new_value);
+    }
+    return mode_;
+}
+
 void ExplorerModeBase::RenderMarks() {
     // delete old marks
     for (auto mark : storage_->marks) {
@@ -42,6 +51,14 @@ void ExplorerModeBase::RenderMarks() {
     for (auto pos : cur_node->children.keys()) {
        auto mark = painter_->DrawMoveMark(pos, board_->GetCurrentColor());
        storage_->marks.push_back(mark);
+    }
+
+    if (storage_->last_stone_border_highlight != nullptr) {
+        painter_->RemoveItem(storage_->last_stone_border_highlight);
+        storage_->last_stone_border_highlight = nullptr;
+    }
+    if (!board_->Empty()) {
+        storage_->last_stone_border_highlight = painter_->HighlightStoneBorder(board_->GetLastMove(), Qt::red);
     }
 }
 
@@ -57,7 +74,7 @@ void ExplorerModeBase::MakeMove(QPair<int, int> cell) {
     storage_->numbers_pos.push_back(stone_txt_pair.second);
 
     RenderMarks();
-    UpdatePonderingPosition();
+    UpdatePonderingPosition(storage_->nbest_value);
 }
 
 void ExplorerModeBase::Undo() {
@@ -69,7 +86,7 @@ void ExplorerModeBase::Undo() {
         delete storage_->numbers_pos.back();
         storage_->numbers_pos.pop_back();
         RenderMarks();
-        UpdatePonderingPosition();
+        UpdatePonderingPosition(storage_->nbest_value);
     }
 }
 
@@ -78,7 +95,7 @@ void ExplorerModeBase::UndoUntil(QPair<int, int> cell) {
         Undo();
     }
     RenderMarks();
-    UpdatePonderingPosition();
+    UpdatePonderingPosition(storage_->nbest_value);
 }
 
 void ExplorerModeBase::Redo() {
@@ -95,7 +112,7 @@ void ExplorerModeBase::Redo() {
         storage_->numbers_pos.push_back(stone_txt_pair.second);
 
         RenderMarks();
-        UpdatePonderingPosition();
+        UpdatePonderingPosition(storage_->nbest_value);
     }
 }
 
@@ -115,14 +132,14 @@ void ExplorerModeBase::StartPondering() {
 
     storage_->engine_state = EngineState::ACTIVE;
     engine_wrapper_->Setup({});
-    engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 5);
+    engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), storage_->nbest_value);
     storage_->pondering_epoch_id = 1; // starting each time with epoch 1, same as engine will
 }
 
-void ExplorerModeBase::UpdatePonderingPosition() {
+void ExplorerModeBase::UpdatePonderingPosition(int nbest_value) {
     if (storage_->engine_state == EngineState::ACTIVE) {
         engine_wrapper_->StopThinking();
-        engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), 5);
+        engine_wrapper_->StartThinking(board_->GetEngineFormatPosition(), nbest_value);
         ++storage_->pondering_epoch_id;
     }
 }

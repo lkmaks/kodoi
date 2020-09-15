@@ -18,7 +18,7 @@ MainWidget::MainWidget(Settings *settings, QWidget *parent) :
     board_scene_ = new BoardScene(this);
     board_ = new AbstractBoard(config_);
     painter_ = new BoardPainter(config_, board_scene_);
-    storage_ = new BoardContextStorage();
+    storage_ = new BoardContextStorage(config_);
     engine_wrapper_ = new EngineWrapper(settings_->engine_cmd, this);
 
     // set up grid of this widget
@@ -36,7 +36,7 @@ MainWidget::MainWidget(Settings *settings, QWidget *parent) :
     lt->addWidget(color_bar_, BoardLayout::Bar);
 
     // InfoWidget
-    info_widget_ = new InfoWidget(this);
+    info_widget_ = new InfoWidget(config_, this);
     lt->addWidget(info_widget_, BoardLayout::InfoWidget);
 
     // create tools for high-entity managers
@@ -57,6 +57,7 @@ MainWidget::MainWidget(Settings *settings, QWidget *parent) :
     QObject::connect(engine_wrapper_, &EngineWrapper::ErrorOccured, engine_viewer_, &EngineViewer::EngineErrorOccured);
     QObject::connect(engine_wrapper_, &EngineWrapper::NbestUpdated, engine_viewer_, &EngineViewer::NbestUpdated);
 
+    QObject::connect(info_widget_, &InfoWidget::NbestValueChanged, this, &MainWidget::NbestValueChanged);
 
 
     default_mode_ = new ExplorerModeDefault(tools);
@@ -76,20 +77,28 @@ void MainWidget::AppSettingsUpdated(SettingsField field) {
     }
 }
 
-void MainWidget::handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event) {
+// scene events
+
+void MainWidget::HandleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event) {
     current_mode_ = TranslateModeToPtr(current_mode_->HandleMousePressEvent(event));
 }
 
-void MainWidget::handleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void MainWidget::HandleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     current_mode_ = TranslateModeToPtr(current_mode_->HandleMouseReleaseEvent(event));
 }
 
-void MainWidget::handleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+void MainWidget::HandleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     current_mode_ = TranslateModeToPtr(current_mode_->HandleMouseMoveEvent(event));
 }
 
-void MainWidget::handleBoardSceneKeyEvent(QKeyEvent *event) {
+void MainWidget::HandleBoardSceneKeyEvent(QKeyEvent *event) {
     current_mode_ = TranslateModeToPtr(current_mode_->HandleKeyPressEvent(event));
+}
+
+// info widget events
+
+void MainWidget::NbestValueChanged(int new_value) {
+   current_mode_ = TranslateModeToPtr(current_mode_->NbestValueChanged(new_value));
 }
 
 

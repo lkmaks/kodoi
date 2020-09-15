@@ -31,11 +31,19 @@ public:
 
     void AppSettingsUpdated(SettingsField field);
 
-    // should be transfered in a new class / skipped
-    void handleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event);
-    void handleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void handleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    void handleBoardSceneKeyEvent(QKeyEvent *event);
+
+
+    // slots coming from user interaction
+
+    // board
+    void HandleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event);
+    void HandleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void HandleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void HandleBoardSceneKeyEvent(QKeyEvent *event);
+
+    // info widget
+
+    void NbestValueChanged(int new_value);
 
 private:
     Config *config_;

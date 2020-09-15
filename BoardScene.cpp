@@ -7,17 +7,17 @@ BoardScene::BoardScene(MainWidget *mwidget)
 }
 
 void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    main_widget->handleBoardSceneMousePressEvent(event);
+    main_widget->HandleBoardSceneMousePressEvent(event);
 }
 
 void BoardScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-    main_widget->handleBoardSceneMouseMoveEvent(event);
+    main_widget->HandleBoardSceneMouseMoveEvent(event);
 }
 
 void BoardScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-    main_widget->handleBoardSceneMouseReleaseEvent(event);
+    main_widget->HandleBoardSceneMouseReleaseEvent(event);
 }
 
 void BoardScene::keyPressEvent(QKeyEvent *keyEvent) {
-    main_widget->handleBoardSceneKeyEvent(keyEvent);
+    main_widget->HandleBoardSceneKeyEvent(keyEvent);
 }
