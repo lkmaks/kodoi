@@ -87,14 +87,14 @@ void BoardPainter::PaintEmptyBoard() {
 
     for (int i = 0; i < board_size_; ++i) {
         QGraphicsSimpleTextItem *txt = new QGraphicsSimpleTextItem();
-        txt->setPos(i * cell_size_ - (qreal)cell_size_ / 4, (qreal)cell_size_ * (board_size_ - 1));
+        txt->setPos(i * cell_size_ - (qreal)cell_size_ / 8, (qreal)cell_size_ * (board_size_ - 1) + 5);
         txt->setText(QString((char)('A' + i)));
         board_scene_->addItem(txt);
     }
 
     for (int i = 0; i < board_size_; ++i) {
         QGraphicsSimpleTextItem *txt = new QGraphicsSimpleTextItem();
-        txt->setPos(-cell_size_, cell_size_ * (board_size_ - i - 1) - (qreal)cell_size_ / 2);
+        txt->setPos(-0.8 * cell_size_, cell_size_ * (board_size_ - i - 1) - (qreal)cell_size_ / 4);
         QString text = QString::number(i + 1);
         if (i < 9) {
             text = " " + text;

@@ -10,16 +10,30 @@
 #include "ColorBar.h"
 #include "BoardScene.h"
 #include "InfoWidget.h"
+#include "BoardDrillContextStorage.h"
+#include "BoardView.h"
+#include "DrillInfoWidget.h"
 
-struct BoardTools {
+struct BoardExplorerTools {
     const Config *config;
     Settings *settings;
     AbstractBoard *board;
+    BoardScene *board_scene;
     BoardPainter *painter;
     BoardContextStorage *storage;
     EngineWrapper *engine_wrapper;
     ColorBar *color_bar;
     InfoWidget *info_widget;
+};
+
+struct BoardDrillTools {
+    const Config *config;
+    Settings *settings;
+    AbstractBoard *board;
+    BoardScene *board_scene;
+    BoardPainter *painter;
+    BoardDrillContextStorage *storage;
+    DrillInfoWidget *info_widget;
 };
 
 #endif // BOARDTOOLS_H

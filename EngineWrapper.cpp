@@ -115,6 +115,7 @@ void EngineWrapper::StopThinking() {
 /// slots (to handle signals from process):
 
 void EngineWrapper::ProcessStarted() {
+    qDebug() << "started!!!!!!" << endl;
     emit EngineStarted();
 }
 

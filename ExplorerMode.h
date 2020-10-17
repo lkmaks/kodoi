@@ -4,11 +4,6 @@
 #include <QString>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
-//#include "AbstractBoard.h"
-//#include "BoardPainter.h"
-//#include "BoardContextStorage.h"
-//#include "Settings.h"
-//#include "EngineWrapper.h"
 #include "BoardTools.h"
 
 
@@ -24,7 +19,7 @@ class ExplorerModeBase : public QObject {
 
 public:
     // auxiliary constructor to initialize different modes in derived classes using it
-    ExplorerModeBase(ExplorerMode mode, BoardTools tools);
+    ExplorerModeBase(ExplorerMode mode, BoardExplorerTools tools);
 
     virtual ExplorerMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual ExplorerMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
@@ -37,12 +32,17 @@ public:
     void Undo();
     void UndoUntil(QPair<int, int> cell);
     void Redo();
+
     void SetViewMarks(bool show);
+    void SetLastMoveHighlight(bool show);
+
     void StartPondering();
     void UpdatePonderingPosition(int nbest_value); // by board
     void StopPondering();
     //update next move marks on the board according to the tree
     void RenderMarks();
+    void RenderLastMoveHighlight();
+    void RenderAuxiliary();
 
 
 signals:
@@ -50,19 +50,13 @@ signals:
 
 protected:
     ExplorerMode mode_;
-
-    const Config *config_;
-    Settings *settings_;
-    AbstractBoard *board_;
-    BoardPainter *painter_;
-    BoardContextStorage *storage_;
-    EngineWrapper *engine_wrapper_;
+    BoardExplorerTools tools_;
 };
 
 
 class ExplorerModeDefault : public ExplorerModeBase {
 public:
-    ExplorerModeDefault(BoardTools tools);
+    ExplorerModeDefault(BoardExplorerTools tools);
     ExplorerMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
     ExplorerMode HandleKeyPressEvent(QKeyEvent *event);
 };
@@ -70,7 +64,7 @@ public:
 
 class ExplorerModeDrawLine : public ExplorerModeBase {
 public:
-    ExplorerModeDrawLine(BoardTools tools);
+    ExplorerModeDrawLine(BoardExplorerTools tools);
     ExplorerMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     ExplorerMode HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event);
 };

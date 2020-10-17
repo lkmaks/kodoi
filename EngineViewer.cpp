@@ -1,7 +1,7 @@
 #include "EngineViewer.h"
 #include <QDebug>
 
-EngineViewer::EngineViewer(const BoardTools &tools) : tools_(tools) {
+EngineViewer::EngineViewer(const BoardExplorerTools &tools) : tools_(tools) {
     PonderingStopped();
 }
 

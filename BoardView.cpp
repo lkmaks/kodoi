@@ -16,6 +16,7 @@ void BoardView::resizeEvent(QResizeEvent *event) {
     if (event->oldSize().width() == -1) {
         qreal k = (qreal)qMin(width(), height()) /
                 ((config_->board_scene_cell_size) * (config_->board_size - 1) + config_->board_scene_coordinates_padding);
+        k /= 1.1; // to be ok
         scale(k, k);
     }
     else {

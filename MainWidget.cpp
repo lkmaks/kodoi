@@ -9,10 +9,15 @@
 #include "EngineWrapper.h"
 #include "InfoWidget.h"
 
+#include<QDir>
+
 MainWidget::MainWidget(Settings *settings, QWidget *parent) :
     QWidget(parent), settings_(settings)
 {
+    qDebug() << QDir::currentPath() << endl;
+
     config_ = new Config();
+    settings_->engine_cmd = "engine.exe";
 
     // set up main entities (alg, paint, common storage between modes)
     board_scene_ = new BoardScene(this);
@@ -40,7 +45,7 @@ MainWidget::MainWidget(Settings *settings, QWidget *parent) :
     lt->addWidget(info_widget_, BoardLayout::InfoWidget);
 
     // create tools for high-entity managers
-    BoardTools tools;
+    BoardExplorerTools tools;
     tools.config = config_;
     tools.settings = settings_;
     tools.board = board_;

@@ -80,7 +80,9 @@ void ColorBar::resizeEvent(QResizeEvent *event) {
         int new_w = event->size().width();
         int new_h = event->size().height();
         qreal k_x = (qreal)new_w / (bar_w);
-        qreal k_y = (qreal)new_h / (2 * bar_half_h * 1.03);
+        qreal k_y = (qreal)new_h / (2 * bar_half_h);
+        k_x /= 1.1;
+        k_y /= 1.1;
         view_->scale(k_x, k_y);
     }
     else {

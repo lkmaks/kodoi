@@ -12,11 +12,6 @@
 #include "EngineViewer.h"
 #include "BoardLayout.h"
 #include "ColorBar.h"
-//#include "BoardPainter.h"
-//#include "BoardContextStorage.h"
-//#include "Config.h"
-//#include "Settings.h"
-//#include "EngineWrapper.h"
 #include "BoardTools.h"
 
 #include <QTextEdit>
@@ -30,8 +25,6 @@ public:
     explicit MainWidget(Settings *settings, QWidget *parent = nullptr);
 
     void AppSettingsUpdated(SettingsField field);
-
-
 
     // slots coming from user interaction
 

@@ -9,7 +9,7 @@ class EngineViewer : public QObject
     Q_OBJECT
 
 public:
-    EngineViewer(const BoardTools &tools);
+    EngineViewer(const BoardExplorerTools &tools);
 
     void PonderingStarted();
     void PonderingStopped();
@@ -21,7 +21,7 @@ public:
     static QColor ValueToEvalCircleColor(int val, int val_max);
 
 private:
-    BoardTools tools_;
+    BoardExplorerTools tools_;
 };
 
 #endif // ENGINEVIEWER_H

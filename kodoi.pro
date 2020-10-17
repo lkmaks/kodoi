@@ -27,11 +27,15 @@ CONFIG += c++11
 SOURCES += \
         AbstractBoard.cpp \
         BoardContextStorage.cpp \
+        BoardDrillContextStorage.cpp \
         BoardLayout.cpp \
         BoardPainter.cpp \
         BoardScene.cpp \
         BoardView.cpp \
         ColorBar.cpp \
+        DrillInfoWidget.cpp \
+        DrillMainWidget.cpp \
+        DrillMode.cpp \
         EngineViewer.cpp \
         EngineWrapper.cpp \
         Enums.cpp \
@@ -45,6 +49,7 @@ SOURCES += \
 HEADERS += \
         AbstractBoard.h \
         BoardContextStorage.h \
+        BoardDrillContextStorage.h \
         BoardLayout.h \
         BoardPainter.h \
         BoardScene.h \
@@ -52,6 +57,9 @@ HEADERS += \
         BoardView.h \
         ColorBar.h \
         Config.h \
+        DrillInfoWidget.h \
+        DrillMainWidget.h \
+        DrillMode.h \
         EngineViewer.h \
         EngineWrapper.h \
         Enums.h \
@@ -67,4 +75,3 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-QMAKE_CXXFLAGS += -DLOCAL
