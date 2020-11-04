@@ -4,5 +4,5 @@ DrillMainWidget::DrillMainWidget(Config *config, Settings *settings, QWidget *pa
 {
     tools_.config = config;
     tools_.settings = settings;
-    tools_.board = AbstractBoard(config.board_size);
+    tools_.board = new AbstractBoard(config);
 }

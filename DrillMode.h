@@ -21,10 +21,10 @@ public:
     // auxiliary constructor to initialize different modes in derived classes using it
     DrillModeBase(DrillMode mode, BoardDrillTools tools);
 
-    virtual DrillMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual DrillMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    virtual DrillMode HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    virtual DrillMode HandleKeyPressEvent(QKeyEvent *event);
+//    virtual DrillMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
+//    virtual DrillMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+//    virtual DrillMode HandleMouseMoveEvent(QGraphicsSceneMouseEvent *event);
+//    virtual DrillMode HandleKeyPressEvent(QKeyEvent *event);
 
     void MakeMove(QPair<int, int> cell);
     void Undo();

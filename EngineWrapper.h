@@ -39,7 +39,7 @@ public:
 
     struct EngineSettings {
         Rule rule = Rule::RENJU;
-        int thread_num = 1;
+        int thread_num = 4;
         int caution_factor = 0;
         int max_node = 500000000;
         int max_depth = 225;
