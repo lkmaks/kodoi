@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "modules/online/OnlineWidget.h"
 #include "modules/explorer/MainWidget.h"
 #include "modules/Settings.h"
 #include "common/Enums.h"
@@ -20,7 +21,7 @@ signals:
     void SettingsUpdated(SettingsField field);
 
 private:
-    MainWidget *main_widget_;
+    OnlineWidget *online_widget_;
     Settings *settings_;
     QMenu *menu_;
 };

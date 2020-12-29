@@ -5,7 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 
-#include "modules/BoardTools.h"
+#include "DrillTools.h"
 
 
 enum class DrillMode {
@@ -20,7 +20,7 @@ class DrillModeBase : public QObject {
 
 public:
     // auxiliary constructor to initialize different modes in derived classes using it
-    DrillModeBase(DrillMode mode, BoardDrillTools tools);
+    DrillModeBase(DrillMode mode, DrillTools tools);
 
 //    virtual DrillMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
 //    virtual DrillMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
@@ -45,24 +45,24 @@ signals:
 
 protected:
     DrillMode mode_;
-    BoardExplorerTools tools_;
+    DrillTools tools_;
 };
 
 
 class DrillModeInactive : public DrillModeBase {
 public:
-    DrillModeInactive(BoardDrillTools tools);
+    DrillModeInactive(DrillTools tools);
 };
 
 
 class DrillModePlayerMove : public DrillModeBase {
 public:
-    DrillModePlayerMove (BoardDrillTools tools);
+    DrillModePlayerMove (DrillTools tools);
 };
 
 class DrillModeCoachMove : public DrillModeBase {
 public:
-    DrillModeCoachMove(BoardDrillTools tools);
+    DrillModeCoachMove(DrillTools tools);
 };
 
 

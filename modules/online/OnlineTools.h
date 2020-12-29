@@ -1,5 +1,5 @@
-#ifndef DRILLTOOLS_H
-#define DRILLTOOLS_H
+#ifndef BOARDTOOLS_H
+#define BOARDTOOLS_H
 
 #include "Config.h"
 #include "modules/Settings.h"
@@ -12,18 +12,20 @@
 #include "common/BoardScene.h"
 #include "common/InfoWidget.h"
 #include "common/BoardView.h"
-#include "BoardDrillContextStorage.h"
-#include "DrillInfoWidget.h"
+#include "OnlineContextStorage.h"
 
-
-struct DrillTools {
+struct BoardOnlineTools {
     const Config *config;
     Settings *settings;
     AbstractBoard *board;
     BoardScene *board_scene;
     BoardPainter *painter;
-    BoardDrillContextStorage *storage;
-    DrillInfoWidget *info_widget;
+    EngineWrapper *engine_wrapper;
+    ColorBar *color_bar;
+    InfoWidget *info_widget;
+    EngineViewer *engine_viewer;
+    OnlineContextStorage *storage;
 };
 
-#endif // DRILLTOOLS_H
+
+#endif // BOARDTOOLS_H

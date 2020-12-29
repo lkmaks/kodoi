@@ -10,16 +10,16 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     settings_ = new Settings();
-    main_widget_ = new MainWidget(settings_, this);
+    online_widget_ = new OnlineWidget(settings_, this);
 
     menu_ = menuBar()->addMenu("Settings");
     QAction *engine_setup = new QAction("Engine", this);
     menu_->addAction(engine_setup);
     connect(engine_setup, &QAction::triggered, this, &MainWindow::EngineSetup);
 
-    connect(this, &MainWindow::SettingsUpdated, main_widget_, &MainWidget::AppSettingsUpdated);
+    connect(this, &MainWindow::SettingsUpdated, online_widget_, &OnlineWidget::AppSettingsUpdated);
 
-    setCentralWidget(main_widget_);
+    setCentralWidget(online_widget_);
     setMinimumSize(1200, 800);
     setStyleSheet("background-color:#dddddd;");
 }

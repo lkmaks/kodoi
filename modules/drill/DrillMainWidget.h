@@ -2,7 +2,7 @@
 #define DRILLMAINWIDGET_H
 
 #include <QWidget>
-#include "modules/BoardTools.h"
+#include "DrillTools.h"
 #include "DrillMode.h"
 
 class DrillMainWidget : public QWidget
@@ -26,7 +26,7 @@ public:
     void NbestValueChanged(int new_value);
 
 private:
-    BoardDrillTools tools_;
+    DrillTools tools_;
 
     DrillModeInactive *inactive_mode_;
     DrillModePlayerMove *playermove_mode_;

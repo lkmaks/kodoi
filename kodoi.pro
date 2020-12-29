@@ -43,8 +43,11 @@ SOURCES += \
         modules/explorer/BoardContextStorage.cpp \
         modules/explorer/ExplorerMode.cpp \
         modules/explorer/MainWidget.cpp \
+        modules/online/OnlineContextStorage.cpp \
+        modules/online/OnlineMode.cpp \
+        modules/online/OnlineWidget.cpp \
         MainWindow.cpp \
-        main.cpp
+        main.cpp \
 
 HEADERS += \
         common/AbstractBoard.h \
@@ -63,11 +66,15 @@ HEADERS += \
         modules/drill/DrillInfoWidget.h \
         modules/drill/DrillMainWidget.h \
         modules/drill/DrillMode.h \
-    modules/drill/DrillTools.h \
+        modules/drill/DrillTools.h \
         modules/explorer/BoardContextStorage.h \
         modules/explorer/ExplorerMode.h \
-    modules/explorer/ExplorerTools.h \
+        modules/explorer/ExplorerTools.h \
         modules/explorer/MainWidget.h \
+        modules/online/OnlineContextStorage.h \
+        modules/online/OnlineMode.h \
+        modules/online/OnlineTools.h \
+        modules/online/OnlineWidget.h \
         Config.h \
         MainWindow.h \
 
