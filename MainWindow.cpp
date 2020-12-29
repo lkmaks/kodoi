@@ -1,8 +1,10 @@
-#include "MainWindow.h"
 #include <QMenu>
 #include <QMenuBar>
 #include <QInputDialog>
 #include <QDebug>
+
+#include "MainWindow.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

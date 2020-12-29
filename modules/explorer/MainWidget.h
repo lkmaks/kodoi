@@ -5,16 +5,12 @@
 #include <QWidget>
 #include <QLayout>
 #include <QSet>
-#include "AbstractBoard.h"
-#include "BoardScene.h"
-#include "BoardView.h"
-#include "ExplorerMode.h"
-#include "EngineViewer.h"
-#include "BoardLayout.h"
-#include "ColorBar.h"
-#include "BoardTools.h"
-
 #include <QTextEdit>
+
+
+#include "ExplorerTools.h"
+#include "ExplorerMode.h"
+#include "BoardContextStorage.h"
 
 
 class MainWidget : public QWidget
@@ -32,7 +28,7 @@ public:
     void HandleBoardSceneMousePressEvent(QGraphicsSceneMouseEvent *event);
     void HandleBoardSceneMouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void HandleBoardSceneMouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    void HandleBoardSceneKeyEvent(QKeyEvent *event);
+    void HandleBoardSceneKeyPressEvent(QKeyEvent *event);
 
     // info widget
 
@@ -54,7 +50,6 @@ private:
     EngineWrapper *engine_wrapper_;
     BoardContextStorage *storage_;
 
-    // High-entity managers
     EngineViewer *engine_viewer_;
 
     ExplorerModeBase *current_mode_;

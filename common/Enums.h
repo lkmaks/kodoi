@@ -35,4 +35,6 @@ enum class SettingsField {
     ENGINE_CMD
 };
 
+using EngineEpochId = int;
+
 #endif // ENUMS_H

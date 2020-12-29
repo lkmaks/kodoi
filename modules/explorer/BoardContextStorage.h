@@ -3,15 +3,17 @@
 
 #include <QPair>
 #include <QGraphicsItem>
-#include "Enums.h"
+#include "common/Enums.h"
 #include "Config.h"
+
+/// todo: remove config
 
 class BoardContextStorage
 {
 public:
-    BoardContextStorage(Config *config);
+    BoardContextStorage(const Config *config);
 
-    Config *config_;
+    const Config *config_;
 
     // stones in order of the position
     QVector<QGraphicsItem*> stones_pos;
@@ -35,7 +37,7 @@ public:
 
     // engine context
     EngineState engine_state = EngineState::STOPPED;
-    int pondering_epoch_id = 0;
+    EngineEpochId pondering_epoch_id = 0;
     QVector<QGraphicsItem*> eval_circles;
     int nbest_value = 3;
 };

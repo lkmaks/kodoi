@@ -25,50 +25,51 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        AbstractBoard.cpp \
-        BoardContextStorage.cpp \
-        BoardDrillContextStorage.cpp \
-        BoardLayout.cpp \
-        BoardPainter.cpp \
-        BoardScene.cpp \
-        BoardView.cpp \
-        ColorBar.cpp \
-        DrillInfoWidget.cpp \
-        DrillMainWidget.cpp \
-        DrillMode.cpp \
-        EngineViewer.cpp \
-        EngineWrapper.cpp \
-        Enums.cpp \
-        ExplorerMode.cpp \
-        ExplorerTree.cpp \
-        InfoWidget.cpp \
-        MainWidget.cpp \
+        common/AbstractBoard.cpp \
+        common/BoardLayout.cpp \
+        common/BoardPainter.cpp \
+        common/BoardScene.cpp \
+        common/BoardView.cpp \
+        common/ColorBar.cpp \
+        common/EngineViewer.cpp \
+        common/EngineWrapper.cpp \
+        common/Enums.cpp \
+        common/ExplorerTree.cpp \
+        common/InfoWidget.cpp \
+        modules/drill/DrillInfoWidget.cpp \
+        modules/drill/DrillMainWidget.cpp \
+        modules/drill/DrillMode.cpp \
+        modules/drill/BoardDrillContextStorage.cpp \
+        modules/explorer/BoardContextStorage.cpp \
+        modules/explorer/ExplorerMode.cpp \
+        modules/explorer/MainWidget.cpp \
         MainWindow.cpp \
         main.cpp
 
 HEADERS += \
-        AbstractBoard.h \
-        BoardContextStorage.h \
-        BoardDrillContextStorage.h \
-        BoardLayout.h \
-        BoardPainter.h \
-        BoardScene.h \
-        BoardTools.h \
-        BoardView.h \
-        ColorBar.h \
+        common/AbstractBoard.h \
+        common/BoardLayout.h \
+        common/BoardPainter.h \
+        common/BoardScene.h \
+        common/BoardView.h \
+        common/ColorBar.h \
+        common/EngineViewer.h \
+        common/EngineWrapper.h \
+        common/Enums.h \
+        common/ExplorerTree.h \
+        common/InfoWidget.h \
+        modules/Settings.h \
+        modules/drill/BoardDrillContextStorage.h \
+        modules/drill/DrillInfoWidget.h \
+        modules/drill/DrillMainWidget.h \
+        modules/drill/DrillMode.h \
+    modules/drill/DrillTools.h \
+        modules/explorer/BoardContextStorage.h \
+        modules/explorer/ExplorerMode.h \
+    modules/explorer/ExplorerTools.h \
+        modules/explorer/MainWidget.h \
         Config.h \
-        DrillInfoWidget.h \
-        DrillMainWidget.h \
-        DrillMode.h \
-        EngineViewer.h \
-        EngineWrapper.h \
-        Enums.h \
-        ExplorerMode.h \
-        ExplorerTree.h \
-        InfoWidget.h \
-        MainWidget.h \
         MainWindow.h \
-        Settings.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

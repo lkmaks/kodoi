@@ -3,18 +3,24 @@
 
 #include <QGraphicsScene>
 
-class MainWidget;
 
 class BoardScene : public QGraphicsScene
 {
-private:
-    MainWidget *main_widget;
+    Q_OBJECT
+
 public:
-    BoardScene(MainWidget *mwidget = nullptr);
+    BoardScene(QObject *parent = nullptr);
+
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void keyPressEvent(QKeyEvent *keyEvent);
+
+signals:
+    void mousePressEventSignal(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEventSignal(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEventSignal(QGraphicsSceneMouseEvent *event);
+    void keyPressEventSignal(QKeyEvent *keyEvent);
 };
 
 #endif // BOARDSCENE_H

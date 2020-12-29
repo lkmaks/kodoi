@@ -1,34 +1,39 @@
 #include "EngineViewer.h"
 #include <QDebug>
 
-EngineViewer::EngineViewer(const BoardExplorerTools &tools) : tools_(tools) {
+EngineViewer::EngineViewer(ColorBar *color_bar, BoardPainter *painter, InfoWidget *info_widget, EngineEpochId *epoch_id) {
+    color_bar_ = color_bar;
+    painter_ = painter;
+    info_widget_ = info_widget;
+    epoch_id_ = epoch_id;
     PonderingStopped();
 }
 
 
 void EngineViewer::PonderingStarted() {
-    tools_.info_widget->SetEngineStateText("pondering started");
+    info_widget_->SetEngineStateText("pondering started");
 }
 
 
 void EngineViewer::PonderingStopped() {
-    tools_.info_widget->SetEngineStateText("pondering stopped");
-    for (QGraphicsItem *circle : tools_.storage->eval_circles) {
-        tools_.painter->RemoveItem(circle);
+    info_widget_->SetEngineStateText("pondering stopped");
+    for (QGraphicsItem *circle : eval_circles_) {
+        painter_->RemoveItem(circle);
     }
-    tools_.storage->eval_circles.clear();
-    tools_.color_bar->SmoothSetProportionLevel(0);
-    tools_.color_bar->SetTopBlackText("");
-    tools_.color_bar->SetBotWhiteText("");
+    eval_circles_.clear();
+    color_bar_->SmoothSetProportionLevel(0);
+    color_bar_->SetTopBlackText("");
+    color_bar_->SetBotWhiteText("");
 }
 
 
 void EngineViewer::EngineErrorOccured() {
-    tools_.info_widget->SetEngineStateText("engine error");
+    info_widget_->SetEngineStateText("engine error");
 }
 
 void EngineViewer::NbestUpdated(const EngineWrapper::NbestUpdate &upd) {
-    if (upd.epoch_id != tools_.storage->pondering_epoch_id) {
+    // everything works in one GUI thread, so can access epoch_id
+    if (upd.epoch_id != *epoch_id_) {
         // old epoch, useless nbest update
         return;
     }
@@ -38,31 +43,31 @@ void EngineViewer::NbestUpdated(const EngineWrapper::NbestUpdate &upd) {
         y *= -1;
     }
     //qDebug() << "set to " << y << endl;
-    tools_.color_bar->SmoothSetProportionLevel(y);
+    color_bar_->SmoothSetProportionLevel(y);
     if (y > 0) {
-        tools_.color_bar->SetTopBlackText("");
-        tools_.color_bar->SetBotWhiteText(QString::number(-abs(upd.value)));
+        color_bar_->SetTopBlackText("");
+        color_bar_->SetBotWhiteText(QString::number(-abs(upd.value)));
     }
     else if (y < 0) {
-        tools_.color_bar->SetTopBlackText("+" + QString::number(abs(upd.value)));
-        tools_.color_bar->SetBotWhiteText("");
+        color_bar_->SetTopBlackText("+" + QString::number(abs(upd.value)));
+        color_bar_->SetBotWhiteText("");
     }
     else {
-        tools_.color_bar->SetTopBlackText("");
-        tools_.color_bar->SetBotWhiteText("0");
+        color_bar_->SetTopBlackText("");
+        color_bar_->SetBotWhiteText("0");
     }
 
-    for (QGraphicsItem *circle : tools_.storage->eval_circles) {
-        tools_.painter->RemoveItem(circle);
+    for (QGraphicsItem *circle : eval_circles_) {
+        painter_->RemoveItem(circle);
     }
-    tools_.storage->eval_circles.clear();
+    eval_circles_.clear();
 
     for (auto &line : upd.play_lines) {
-        auto circle = tools_.painter->DrawEvalCircle(line.line[0], ValueToEvalCircleColor(line.value, 10000));
-        tools_.storage->eval_circles.push_back(circle);
+        auto circle = painter_->DrawEvalCircle(line.line[0], ValueToEvalCircleColor(line.value, 10000));
+        eval_circles_.push_back(circle);
     }
 
-    tools_.info_widget->SetEngineStateText("Pondering on: depth " +
+    info_widget_->SetEngineStateText("Pondering on: depth " +
                                            QString::number(upd.depth_range.first) +
                                            "-" +
                                            QString::number(upd.depth_range.second));

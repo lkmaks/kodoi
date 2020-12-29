@@ -2,7 +2,7 @@
 #define DRILLMAINWIDGET_H
 
 #include <QWidget>
-#include "BoardTools.h"
+#include "modules/BoardTools.h"
 #include "DrillMode.h"
 
 class DrillMainWidget : public QWidget

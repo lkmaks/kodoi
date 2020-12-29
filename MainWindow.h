@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "MainWidget.h"
-#include "Settings.h"
-#include "Enums.h"
+#include "modules/explorer/MainWidget.h"
+#include "modules/Settings.h"
+#include "common/Enums.h"
 
 class MainWindow : public QMainWindow
 {

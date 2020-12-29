@@ -4,7 +4,8 @@
 #include <QString>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
-#include "BoardTools.h"
+#include "ExplorerTools.h"
+#include "BoardContextStorage.h"
 
 
 enum class ExplorerMode {
@@ -19,7 +20,7 @@ class ExplorerModeBase : public QObject {
 
 public:
     // auxiliary constructor to initialize different modes in derived classes using it
-    ExplorerModeBase(ExplorerMode mode, BoardExplorerTools tools);
+    ExplorerModeBase(ExplorerMode mode, BoardExplorerTools tool);
 
     virtual ExplorerMode HandleMousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual ExplorerMode HandleMouseReleaseEvent(QGraphicsSceneMouseEvent *event);

@@ -1,8 +1,8 @@
 #include "BoardView.h"
 #include <QResizeEvent>
 #include <iostream>
-#include "MainWidget.h"
 #include <QDebug>
+
 
 BoardView::BoardView(const Config *config, QWidget *parent) : QGraphicsView (parent), config_(config)
 {

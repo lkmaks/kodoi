@@ -3,7 +3,7 @@
 
 #include <QPair>
 #include <QGraphicsItem>
-#include "Enums.h"
+#include "common/Enums.h"
 #include "Config.h"
 
 struct BoardDrillContextStorage

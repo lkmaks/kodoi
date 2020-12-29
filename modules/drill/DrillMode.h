@@ -4,7 +4,8 @@
 #include <QString>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
-#include "BoardTools.h"
+
+#include "modules/BoardTools.h"
 
 
 enum class DrillMode {

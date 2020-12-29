@@ -1,13 +1,11 @@
 #include "ExplorerMode.h"
-#include "Enums.h"
 #include <QDebug>
 #include <QEventLoop>
-#include "Enums.h"
 
-class MainWidget;
 
 ExplorerModeBase::ExplorerModeBase(ExplorerMode mode, BoardExplorerTools tools) :
-    mode_(mode), tools_(tools) {}
+    mode_(mode), tools_(tools) {
+}
 
 
 ExplorerMode ExplorerModeBase::HandleMousePressEvent(QGraphicsSceneMouseEvent *event) {

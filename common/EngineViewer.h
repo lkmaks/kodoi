@@ -1,7 +1,9 @@
 #ifndef ENGINEVIEWER_H
 #define ENGINEVIEWER_H
 
-#include "BoardTools.h"
+#include "common/ColorBar.h"
+#include "common/BoardPainter.h"
+#include "common/InfoWidget.h"
 #include <QObject>
 
 class EngineViewer : public QObject
@@ -9,7 +11,7 @@ class EngineViewer : public QObject
     Q_OBJECT
 
 public:
-    EngineViewer(const BoardExplorerTools &tools);
+    EngineViewer(ColorBar *, BoardPainter *, InfoWidget *, EngineEpochId *);
 
     void PonderingStarted();
     void PonderingStopped();
@@ -21,7 +23,11 @@ public:
     static QColor ValueToEvalCircleColor(int val, int val_max);
 
 private:
-    BoardExplorerTools tools_;
+    ColorBar *color_bar_;
+    BoardPainter *painter_;
+    InfoWidget *info_widget_;
+    QVector<QGraphicsItem*> eval_circles_;
+    EngineEpochId *epoch_id_;
 };
 
 #endif // ENGINEVIEWER_H
