@@ -1,6 +1,8 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
+#include <vector>
+
 enum class StoneColor {
     WHITE,
     BLACK,
@@ -9,7 +11,7 @@ enum class StoneColor {
 
 StoneColor opposite_color(StoneColor color);
 
-enum class Cell {
+enum class CellType {
     EMPTY,
     WHITESTONE,
     BLACKSTONE
@@ -36,5 +38,6 @@ enum class SettingsField {
 };
 
 using EngineEpochId = int;
+using OnlineEpochId = size_t;
 
 #endif // ENUMS_H

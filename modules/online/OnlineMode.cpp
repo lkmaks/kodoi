@@ -36,6 +36,23 @@ OnlineMode OnlineModeBase::NbestValueChanged(int new_value) {
     return mode_;
 }
 
+void OnlineModeBase::TryMakeMove(QPair<int, int> cell) {
+
+}
+
+void OnlineModeBase::TryUndo() {
+
+}
+
+void OnlineModeBase::TryUndoUntil(QPair<int, int> cell) {
+
+}
+
+void OnlineModeBase::TryRedo() {
+
+}
+
+
 void OnlineModeBase::MakeMove(QPair<int, int> cell) {
     // update abstract board
     tools_.board->MakeMove(cell);
@@ -200,16 +217,16 @@ OnlineMode OnlineModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent *ev
             return OnlineMode::DRAWLINE;
         }
         else {
-            if (tools_.board->GetCell(cell) == Cell::EMPTY) {
-                MakeMove(cell);
+            if (tools_.board->GetCell(cell) == CellType::EMPTY) {
+                TryMakeMove(cell);
             }
             else {
-                UndoUntil(cell);
+                TryUndoUntil(cell);
             }
         }
     }
     else if (event->button() == Qt::RightButton) {
-        Undo();
+        TryUndo();
     }
     return OnlineMode::DEFAULT;
 }
@@ -224,10 +241,10 @@ OnlineMode OnlineModeDefault::HandleKeyPressEvent(QKeyEvent *event) {
         tools_.storage->lines.clear();
     }
     else if (event->key() == Qt::Key_Left) {
-        Undo();
+        TryUndo();
     }
     else if (event->key() == Qt::Key_Right) {
-        Redo();
+        TryRedo();
     }
     else if (event->key() == Qt::Key_P) {
         //qDebug() << "pressed P" << endl;

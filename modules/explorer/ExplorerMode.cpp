@@ -200,7 +200,7 @@ ExplorerMode ExplorerModeDefault::HandleMousePressEvent(QGraphicsSceneMouseEvent
             return ExplorerMode::DRAWLINE;
         }
         else {
-            if (tools_.board->GetCell(cell) == Cell::EMPTY) {
+            if (tools_.board->GetCell(cell) == CellType::EMPTY) {
                 MakeMove(cell);
             }
             else {

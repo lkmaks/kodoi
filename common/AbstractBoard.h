@@ -11,17 +11,18 @@
 class AbstractBoard
 {
 public:
-    AbstractBoard(const Config *config);
+    AbstractBoard(int board_size = 15);
 
     QPair<int, int> GetLastMove();
     bool Empty();
-    Cell GetCell(QPair<int, int> cell);
+    CellType GetCell(QPair<int, int> cell);
     StoneColor GetCurrentColor();
     int MovesCount();
     EngineWrapper::Position GetEngineFormatPosition();
 
-    void MakeMove(QPair<int, int> cell);
+    bool MakeMove(QPair<int, int> cell);
     bool Undo();
+    bool UndoUntil(QPair<int, int> cell);
     bool Redo();
 
     static bool IsRenjuLine(QPair<int, int> p1, QPair<int, int> p2);
@@ -31,11 +32,9 @@ public:
     ExplorerTree *tree_;
 private:
     int board_size_;
-    QVector<QVector<Cell> > board_arr_;
+    QVector<QVector<CellType> > board_arr_;
     QVector<QPair<int, int> > sequence_; // position up to "going back" point
     int cur_seq_len_; // prefix of sequence currently on the board
-
-    const Config *config_;
 };
 
 #endif // RENJUBOARD_H

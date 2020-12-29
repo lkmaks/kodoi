@@ -44,13 +44,17 @@ private:
     InfoWidget *info_widget_;
 
     // logical board tools
-    BoardScene *board_scene_;
+
+    ActionBoard *action_board_;
     AbstractBoard *board_;
+    BoardScene *board_scene_;
     BoardPainter *painter_;
     EngineWrapper *engine_wrapper_;
     OnlineContextStorage *storage_;
 
+    // managers
     EngineViewer *engine_viewer_;
+    OnlineClient *client_;
 
     OnlineModeBase *current_mode_;
     OnlineModeDefault *default_mode_;

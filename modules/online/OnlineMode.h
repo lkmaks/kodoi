@@ -29,6 +29,11 @@ public:
 
     virtual OnlineMode NbestValueChanged(int new_value);
 
+    void TryMakeMove(QPair<int, int> cell);
+    void TryUndo();
+    void TryUndoUntil(QPair<int, int> cell);
+    void TryRedo();
+
     void MakeMove(QPair<int, int> cell);
     void Undo();
     void UndoUntil(QPair<int, int> cell);

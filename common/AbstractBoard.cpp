@@ -1,8 +1,8 @@
 #include "AbstractBoard.h"
 
-AbstractBoard::AbstractBoard(const Config *config) : config_(config)
+AbstractBoard::AbstractBoard(int board_size)
 {
-    board_size_ = config->board_size;
+    board_size_ = board_size;
     board_arr_.resize(board_size_);
     for (int i = 0; i < board_size_; ++i) {
         board_arr_[i].resize(board_size_);
@@ -11,8 +11,11 @@ AbstractBoard::AbstractBoard(const Config *config) : config_(config)
     cur_seq_len_ = 0;
 }
 
-void AbstractBoard::MakeMove(QPair<int, int> cell) {
-    // $cell is not taken by one of the current stones
+bool AbstractBoard::MakeMove(QPair<int, int> cell) {
+if (!IsCell(cell) || board_arr_[cell.first][cell.second] != CellType::EMPTY) {
+        return false;
+    }
+
     if (cur_seq_len_ < sequence_.size() &&
             sequence_[cur_seq_len_] == cell) {
         ++cur_seq_len_;
@@ -24,22 +27,31 @@ void AbstractBoard::MakeMove(QPair<int, int> cell) {
         sequence_.push_back(cell);
         ++cur_seq_len_;
     }
-    Cell new_cell = Cell::WHITESTONE;
+    CellType new_cell = CellType::WHITESTONE;
     if (cur_seq_len_ % 2 == 0) {
-        new_cell = Cell::BLACKSTONE;
+        new_cell = CellType::BLACKSTONE;
     }
     board_arr_[cell.first][cell.second] = new_cell;
-    tree_->MakeMove(cell);
+    return true;
 }
 
-QPair<int, int> AbstractBoard::GetLastMove() {
-    return sequence_[cur_seq_len_ - 1];
+
+bool AbstractBoard::UndoUntil(QPair<int, int> cell) {
+    if (!IsCell(cell) || board_arr_[cell.first][cell.second] == CellType::EMPTY) {
+        return false;
+    }
+
+    while (GetLastMove() != cell) {
+        Undo();
+    }
+
+    return true;
 }
 
 bool AbstractBoard::Undo() {
    if (cur_seq_len_ > 0) {
        auto cell = sequence_[cur_seq_len_ - 1];
-       board_arr_[cell.first][cell.second] = Cell::EMPTY;
+       board_arr_[cell.first][cell.second] = CellType::EMPTY;
        --cur_seq_len_;
        tree_->UndoLastMove();
        return true;
@@ -56,11 +68,15 @@ bool AbstractBoard::Redo() {
     return false;
 }
 
+QPair<int, int> AbstractBoard::GetLastMove() {
+    return sequence_[cur_seq_len_ - 1];
+}
+
 bool AbstractBoard::Empty() {
     return cur_seq_len_ == 0;
 }
 
-Cell AbstractBoard::GetCell(QPair<int, int> cell) {
+CellType AbstractBoard::GetCell(QPair<int, int> cell) {
     return board_arr_[cell.first][cell.second];
 }
 

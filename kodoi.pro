@@ -43,6 +43,8 @@ SOURCES += \
         modules/explorer/BoardContextStorage.cpp \
         modules/explorer/ExplorerMode.cpp \
         modules/explorer/MainWidget.cpp \
+    modules/online/ActionBoard.cpp \
+    modules/online/OnlineClient.cpp \
         modules/online/OnlineContextStorage.cpp \
         modules/online/OnlineMode.cpp \
         modules/online/OnlineWidget.cpp \
@@ -71,12 +73,15 @@ HEADERS += \
         modules/explorer/ExplorerMode.h \
         modules/explorer/ExplorerTools.h \
         modules/explorer/MainWidget.h \
+    modules/online/ActionBoard.h \
+    modules/online/OnlineClient.h \
         modules/online/OnlineContextStorage.h \
         modules/online/OnlineMode.h \
         modules/online/OnlineTools.h \
         modules/online/OnlineWidget.h \
         Config.h \
-        MainWindow.h \
+        MainWindow.h \ \
+    modules/online/helpers.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

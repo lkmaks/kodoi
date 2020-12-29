@@ -19,7 +19,8 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
 
     // set up Online entities (alg, paint, common storage between modes)
     board_scene_ = new BoardScene();
-    board_ = new AbstractBoard(config_);
+    board_ = new AbstractBoard(config_->board_size);
+    action_board_ = new ActionBoard(board_);
     painter_ = new BoardPainter(config_, board_scene_);
     storage_ = new OnlineContextStorage(config_);
     engine_wrapper_ = new EngineWrapper(settings_->engine_cmd, this);
@@ -45,10 +46,14 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
     // EngineViewer manager
     engine_viewer_ = new EngineViewer(color_bar_, painter_, info_widget_, &storage_->pondering_epoch_id);
 
+    // OnlineClient manager
+    client_ = new OnlineClient();
+
     // create tools for high-entity managers
     BoardOnlineTools tools;
     tools.config = config_;
     tools.settings = settings_;
+    tools.action_board = action_board_;
     tools.board = board_;
     tools.painter = painter_;
     tools.engine_wrapper = engine_wrapper_;
@@ -56,6 +61,7 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
     tools.info_widget = info_widget_;
     tools.engine_viewer = engine_viewer_;
     tools.storage = storage_;
+    tools.client = client_;
 
     QObject::connect(board_scene_, &BoardScene::mousePressEventSignal, this, &OnlineWidget::HandleBoardSceneMousePressEvent);
     QObject::connect(board_scene_, &BoardScene::mouseReleaseEventSignal, this, &OnlineWidget::HandleBoardSceneMouseReleaseEvent);
