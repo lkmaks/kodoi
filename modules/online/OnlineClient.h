@@ -4,6 +4,7 @@
 #include <QPair>
 #include <QObject>
 #include <QTcpSocket>
+#include <QDateTime>
 
 #include "common/Enums.h"
 #include "protocol/BoardAction.h"
@@ -50,6 +51,11 @@ private:
     QTcpSocket *sock_;
     QByteArray *data_;
     RoomId room_id_;
+
+    // kostyl
+    bool CheckTimeout();
+    QDateTime last_msg_time_;
+    int msecs_timeout_ = 100;
 };
 
 #endif // ONLINECLIENT_H

@@ -55,6 +55,7 @@ OnlineMode OnlineModeBase::HandleOnlineReceivedUpdate(BoardAction action) {
         // that is very, very bad, not supposed to happen
         return mode_;
     }
+    std::cerr << "update ok" << std::endl;
     tools_.storage->online_epoch_id += 1; // increase epoch with every update
     ApplyBoardAction(action);
     return mode_;
@@ -97,10 +98,14 @@ void OnlineModeBase::Undo() {
     bool succ = tools_.board->Undo();
     if (succ) {
         // really commiting undo
-        delete tools_.storage->stones_pos.back();
+        tools_.painter->RemoveItem(tools_.storage->stones_pos.back());
+        //delete tools_.storage->stones_pos.back();
         tools_.storage->stones_pos.pop_back();
-        delete tools_.storage->numbers_pos.back();
+
+        tools_.painter->RemoveItem(tools_.storage->numbers_pos.back());
+        //delete tools_.storage->numbers_pos.back();
         tools_.storage->numbers_pos.pop_back();
+
         RenderAuxiliary();
         UpdatePonderingPosition(tools_.storage->nbest_value);
     }

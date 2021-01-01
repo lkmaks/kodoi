@@ -1,5 +1,6 @@
 #include "OnlineClient.h"
 #include "protocol/Response.h"
+#include <QThread>
 
 
 OnlineClient::OnlineClient(QObject *parent) : QObject(parent)
@@ -7,8 +8,10 @@ OnlineClient::OnlineClient(QObject *parent) : QObject(parent)
     data_ = new QByteArray();
     sock_ = new QTcpSocket();
     connect(sock_, &QTcpSocket::readyRead, this, &OnlineClient::SocketReadyRead);
-    sock_->connectToHost("127.0.0.1", 12345);
+    sock_->connectToHost("54.146.159.82", 12345);
+    //sock_->connectToHost("127.0.0.1", 12345);
     sock_->waitForConnected();
+    last_msg_time_ = QDateTime::currentDateTime();
 }
 
 void OnlineClient::SetRoomId(RoomId room_id) {
@@ -52,6 +55,10 @@ void OnlineClient::MakeMove(QPair<int, int> cell, OnlineEpochId epoch_id) {
 }
 
 void OnlineClient::Undo(OnlineEpochId epoch_id) {
+    if (!CheckTimeout()) {
+        std::cerr << "too fast" << std::endl;
+        return;
+    }
     BoardAction action;
     action.type = BoardActionType::UNDO;
     action.epoch_id = epoch_id;
@@ -67,6 +74,10 @@ void OnlineClient::UndoUntil(QPair<int, int> cell, OnlineEpochId epoch_id) {
 }
 
 void OnlineClient::Redo(OnlineEpochId epoch_id) {
+    if (!CheckTimeout()) {
+        std::cerr << "too fast" << std::endl;
+        return;
+    }
     BoardAction action;
     action.type = BoardActionType::REDO;
     action.epoch_id = epoch_id;
@@ -98,4 +109,9 @@ void OnlineClient::SendMessage(Message msg) {
     sock_->write(QByteArray(bytes_str.c_str(), bytes_str.length()));
 }
 
-
+bool OnlineClient::CheckTimeout() {
+    auto cur_time = QDateTime::currentDateTime();
+    auto msecs = last_msg_time_.msecsTo(cur_time);
+    last_msg_time_ = cur_time;
+    return msecs > msecs_timeout_;
+}
