@@ -96,9 +96,11 @@ void OnlineClient::SocketReadyRead() {
             emit ReceivedUpdate(resp.action);
         }
         else if (resp.type == ResponseType::INIT) {
+            std::cerr << "emit receive" << std::endl;
             emit ReceivedInit(resp.action);
         }
         else if (resp.type == ResponseType::STATUS) {
+            std::cerr << "emit status" << std::endl;
             emit ReceivedStatus(resp.status);
         }
     }
@@ -112,6 +114,9 @@ void OnlineClient::SendMessage(Message msg) {
 bool OnlineClient::CheckTimeout() {
     auto cur_time = QDateTime::currentDateTime();
     auto msecs = last_msg_time_.msecsTo(cur_time);
-    last_msg_time_ = cur_time;
-    return msecs > msecs_timeout_;
+    bool ok = msecs > msecs_timeout_;
+    if (ok) {
+        last_msg_time_ = cur_time;
+    }
+    return ok;
 }

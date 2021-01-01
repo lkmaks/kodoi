@@ -74,7 +74,7 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
 
     QObject::connect(info_widget_, &InfoWidget::NbestValueChanged, this, &OnlineWidget::NbestValueChanged);
 
-    QObject::connect(client_, &OnlineClient::ReceivedStatus, this, &OnlineWidget::HandleOnlineReceivedStatus);
+    //QObject::connect(client_, &OnlineClient::ReceivedStatus, this, &OnlineWidget::HandleOnlineReceivedStatus);
     QObject::connect(client_, &OnlineClient::ReceivedInit, this, &OnlineWidget::HandleOnlineReceivedInit);
     QObject::connect(client_, &OnlineClient::ReceivedUpdate, this, &OnlineWidget::HandleOnlineReceivedUpdate);
 

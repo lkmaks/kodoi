@@ -32,14 +32,9 @@ public:
     void Redo(OnlineEpochId epoch_id);
 
 signals:
-    // better in terms of copy-paste
     void ReceivedStatus(bool status);
     void ReceivedInit(BoardAction action);
     void ReceivedUpdate(BoardAction action);
-//    void ReceivedMakeMove(QPair<int, int> cell, OnlineEpochId epoch_id);
-//    void RecievedUndo(OnlineEpochId epoch_id);
-//    void RecievedUndoUntil(QPair<int, int> cell, OnlineEpochId epoch_id);
-//    void RecievedRedo(OnlineEpochId epoch_id);
 private:
 
     // slot
@@ -55,7 +50,7 @@ private:
     // kostyl
     bool CheckTimeout();
     QDateTime last_msg_time_;
-    int msecs_timeout_ = 100;
+    int msecs_timeout_ = 50;
 };
 
 #endif // ONLINECLIENT_H
