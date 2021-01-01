@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -43,13 +44,14 @@ SOURCES += \
         modules/explorer/BoardContextStorage.cpp \
         modules/explorer/ExplorerMode.cpp \
         modules/explorer/MainWidget.cpp \
-    modules/online/ActionBoard.cpp \
-    modules/online/OnlineClient.cpp \
+        modules/online/OnlineClient.cpp \
         modules/online/OnlineContextStorage.cpp \
         modules/online/OnlineMode.cpp \
         modules/online/OnlineWidget.cpp \
         MainWindow.cpp \
         main.cpp \
+        modules/online/protocol/Message.cpp \
+        modules/online/protocol/Response.cpp
 
 HEADERS += \
         common/AbstractBoard.h \
@@ -73,15 +75,18 @@ HEADERS += \
         modules/explorer/ExplorerMode.h \
         modules/explorer/ExplorerTools.h \
         modules/explorer/MainWidget.h \
-    modules/online/ActionBoard.h \
-    modules/online/OnlineClient.h \
+        modules/online/OnlineClient.h \
         modules/online/OnlineContextStorage.h \
         modules/online/OnlineMode.h \
         modules/online/OnlineTools.h \
         modules/online/OnlineWidget.h \
         Config.h \
-        MainWindow.h \ \
-    modules/online/helpers.h
+        MainWindow.h \
+        modules/online/protocol/BoardAction.h \
+        modules/online/protocol/Message.h \
+        modules/online/protocol/Response.h \
+        modules/online/protocol/helpers.h \
+        modules/online/protocol/types.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

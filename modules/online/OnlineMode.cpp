@@ -36,20 +36,45 @@ OnlineMode OnlineModeBase::NbestValueChanged(int new_value) {
     return mode_;
 }
 
-void OnlineModeBase::TryMakeMove(QPair<int, int> cell) {
 
+OnlineMode OnlineModeBase::HandleOnlineReceivedStatus(bool status) {
+    (void)status;
+    return mode_;
+}
+
+
+OnlineMode OnlineModeBase::HandleOnlineReceivedInit(BoardAction action) {
+    tools_.storage->online_epoch_id = action.epoch_id;
+    ApplyBoardAction(action);
+    return mode_;
+}
+
+
+OnlineMode OnlineModeBase::HandleOnlineReceivedUpdate(BoardAction action) {
+    if (action.epoch_id != tools_.storage->online_epoch_id) {
+        // that is very, very bad, not supposed to happen
+        return mode_;
+    }
+    tools_.storage->online_epoch_id += 1; // increase epoch with every update
+    ApplyBoardAction(action);
+    return mode_;
+}
+
+
+void OnlineModeBase::TryMakeMove(QPair<int, int> cell) {
+    tools_.client->MakeMove(cell, tools_.storage->online_epoch_id);
 }
 
 void OnlineModeBase::TryUndo() {
-
+    tools_.client->Undo(tools_.storage->online_epoch_id);
 }
 
 void OnlineModeBase::TryUndoUntil(QPair<int, int> cell) {
-
+    tools_.client->UndoUntil(cell, tools_.storage->online_epoch_id);
 }
 
 void OnlineModeBase::TryRedo() {
-
+    tools_.client->Redo(tools_.storage->online_epoch_id);
 }
 
 
@@ -126,6 +151,21 @@ void OnlineModeBase::RenderMarks() {
            auto mark = tools_.painter->DrawMoveMark(pos, tools_.board->GetCurrentColor());
            tools_.storage->marks.push_back(mark);
         }
+    }
+}
+
+void OnlineModeBase::ApplyBoardAction(BoardAction action) {
+    if (action.type == BoardActionType::MOVE) {
+        MakeMove(action.coords);
+    }
+    else if (action.type == BoardActionType::UNDO) {
+        Undo();
+    }
+    else if (action.type == BoardActionType::UNDO_UNTIL) {
+        UndoUntil(action.coords);
+    }
+    else if (action.type == BoardActionType::REDO) {
+        Redo();
     }
 }
 
@@ -263,6 +303,9 @@ OnlineMode OnlineModeDefault::HandleKeyPressEvent(QKeyEvent *event) {
     }
     return OnlineMode::DEFAULT;
 }
+
+
+/// DRAWLINE
 
 
 OnlineModeDrawLine::OnlineModeDrawLine(BoardOnlineTools tools)

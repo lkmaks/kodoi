@@ -1,5 +1,5 @@
-#ifndef MAINWIDGET_H
-#define MAINWIDGET_H
+#ifndef ONLINEWIDGET_H
+#define ONLINEWIDGET_H
 
 #include <QObject>
 #include <QWidget>
@@ -11,6 +11,7 @@
 #include "OnlineTools.h"
 #include "OnlineMode.h"
 #include "OnlineContextStorage.h"
+#include "protocol/BoardAction.h"
 
 
 class OnlineWidget : public QWidget
@@ -22,6 +23,9 @@ public:
 
     void AppSettingsUpdated(SettingsField field);
 
+    void OnlineRoomCreate(RoomId room_id);
+    void OnlineRoomEnter(RoomId room_id);
+
     // slots coming from user interaction
 
     // board
@@ -31,8 +35,12 @@ public:
     void HandleBoardSceneKeyPressEvent(QKeyEvent *event);
 
     // info widget
-
     void NbestValueChanged(int new_value);
+
+    // online
+    void HandleOnlineReceivedStatus(bool status);
+    void HandleOnlineReceivedInit(BoardAction action);
+    void HandleOnlineReceivedUpdate(BoardAction action);
 
 private:
     Config *config_;
@@ -45,16 +53,17 @@ private:
 
     // logical board tools
 
-    ActionBoard *action_board_;
     AbstractBoard *board_;
     BoardScene *board_scene_;
     BoardPainter *painter_;
     EngineWrapper *engine_wrapper_;
     OnlineContextStorage *storage_;
 
+    // online tools
+    OnlineClient *client_;
+
     // managers
     EngineViewer *engine_viewer_;
-    OnlineClient *client_;
 
     OnlineModeBase *current_mode_;
     OnlineModeDefault *default_mode_;
@@ -64,4 +73,4 @@ private:
     OnlineModeBase *TranslateModeToPtr(OnlineMode mode);
 };
 
-#endif // MAINWIDGET_H
+#endif // ONLINEWIDGET_H

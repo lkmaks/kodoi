@@ -19,7 +19,7 @@ MainWidget::MainWidget(Settings *settings, QWidget *parent) :
 
     // set up main entities (alg, paint, common storage between modes)
     board_scene_ = new BoardScene();
-    board_ = new AbstractBoard(config_);
+    board_ = new AbstractBoard(config_->board_size);
     painter_ = new BoardPainter(config_, board_scene_);
     storage_ = new BoardContextStorage(config_);
     engine_wrapper_ = new EngineWrapper(settings_->engine_cmd, this);

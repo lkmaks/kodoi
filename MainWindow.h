@@ -17,13 +17,18 @@ public:
 
     void EngineSetup();
 
+    void OnlineCreate();
+    void OnlineEnter();
+
 signals:
     void SettingsUpdated(SettingsField field);
+
+    void OnlineRoomCreate(RoomId room_id);
+    void OnlineRoomEnter(RoomId room_id);
 
 private:
     OnlineWidget *online_widget_;
     Settings *settings_;
-    QMenu *menu_;
 };
 
 #endif // MAINWINDOW_H

@@ -1,5 +1,5 @@
-#ifndef COMMONMODEDATASTORAGE_H
-#define COMMONMODEDATASTORAGE_H
+#ifndef ONLINECONTEXTSTORAGE_H
+#define ONLINECONTEXTSTORAGE_H
 
 #include <QPair>
 #include <QGraphicsItem>
@@ -43,7 +43,7 @@ public:
 
     /// now online part
 
-
+    OnlineEpochId online_epoch_id = 0;
 };
 
-#endif // COMMONMODEDATASTORAGE_H
+#endif // ONLINECONTEXTSTORAGE_H

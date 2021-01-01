@@ -1,5 +1,5 @@
-#ifndef BOARDTOOLS_H
-#define BOARDTOOLS_H
+#ifndef ONLINETOOLS_H
+#define ONLINETOOLS_H
 
 #include "Config.h"
 #include "modules/Settings.h"
@@ -13,7 +13,6 @@
 #include "common/BoardView.h"
 #include "OnlineContextStorage.h"
 #include "OnlineClient.h"
-#include "ActionBoard.h"
 
 struct BoardOnlineTools {
     const Config *config;
@@ -26,9 +25,8 @@ struct BoardOnlineTools {
     EngineViewer *engine_viewer;
     OnlineClient *client;
     OnlineContextStorage *storage;
-    ActionBoard *action_board;
     AbstractBoard *board;
 };
 
 
-#endif // BOARDTOOLS_H
+#endif // ONLINETOOLS_H

@@ -12,7 +12,7 @@ AbstractBoard::AbstractBoard(int board_size)
 }
 
 bool AbstractBoard::MakeMove(QPair<int, int> cell) {
-if (!IsCell(cell) || board_arr_[cell.first][cell.second] != CellType::EMPTY) {
+    if (!IsCell(cell) || board_arr_[cell.first][cell.second] != CellType::EMPTY) {
         return false;
     }
 
@@ -32,6 +32,9 @@ if (!IsCell(cell) || board_arr_[cell.first][cell.second] != CellType::EMPTY) {
         new_cell = CellType::BLACKSTONE;
     }
     board_arr_[cell.first][cell.second] = new_cell;
+
+    tree_->MakeMove(cell);
+
     return true;
 }
 

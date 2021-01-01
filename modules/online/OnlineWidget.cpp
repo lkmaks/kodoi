@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QThread>
 #include <QDir>
+#include <QEventLoop>
 
 #include "OnlineWidget.h"
 
@@ -20,7 +21,6 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
     // set up Online entities (alg, paint, common storage between modes)
     board_scene_ = new BoardScene();
     board_ = new AbstractBoard(config_->board_size);
-    action_board_ = new ActionBoard(board_);
     painter_ = new BoardPainter(config_, board_scene_);
     storage_ = new OnlineContextStorage(config_);
     engine_wrapper_ = new EngineWrapper(settings_->engine_cmd, this);
@@ -46,14 +46,13 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
     // EngineViewer manager
     engine_viewer_ = new EngineViewer(color_bar_, painter_, info_widget_, &storage_->pondering_epoch_id);
 
-    // OnlineClient manager
+    // OnlineClient tool
     client_ = new OnlineClient();
 
     // create tools for high-entity managers
     BoardOnlineTools tools;
     tools.config = config_;
     tools.settings = settings_;
-    tools.action_board = action_board_;
     tools.board = board_;
     tools.painter = painter_;
     tools.engine_wrapper = engine_wrapper_;
@@ -75,6 +74,10 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
 
     QObject::connect(info_widget_, &InfoWidget::NbestValueChanged, this, &OnlineWidget::NbestValueChanged);
 
+    QObject::connect(client_, &OnlineClient::ReceivedStatus, this, &OnlineWidget::HandleOnlineReceivedStatus);
+    QObject::connect(client_, &OnlineClient::ReceivedInit, this, &OnlineWidget::HandleOnlineReceivedInit);
+    QObject::connect(client_, &OnlineClient::ReceivedUpdate, this, &OnlineWidget::HandleOnlineReceivedUpdate);
+
     storage_ = new OnlineContextStorage(config_);
 
     default_mode_ = new OnlineModeDefault(tools);
@@ -82,8 +85,16 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
 
     // set initial mode: default
     current_mode_ = default_mode_;
-}
 
+
+    /// testing
+//    client_->Create(1);
+//    client_->Enter(1);
+//    client_->SetRoomId(1);
+//    QEventLoop loop;
+//    QObject::connect(client_, &OnlineClient::ReceivedStatus, &loop, &QEventLoop::quit);
+//    loop.exec();
+}
 
 void OnlineWidget::AppSettingsUpdated(SettingsField field) {
     if (field == SettingsField::ENGINE_CMD) {
@@ -91,6 +102,41 @@ void OnlineWidget::AppSettingsUpdated(SettingsField field) {
         storage_->engine_state = EngineState::STOPPED;
         engine_wrapper_->SetEngineCmd(settings_->engine_cmd);
         engine_viewer_->PonderingStopped();
+    }
+}
+
+void OnlineWidget::OnlineRoomCreate(RoomId room_id) {
+    client_->Create(room_id);
+    bool res = false;
+    QEventLoop loop;
+    QObject::connect(client_, &OnlineClient::ReceivedStatus, this, [&loop, &res](bool status){
+        res = status;
+        loop.quit();
+    });
+    loop.exec();
+    if (res) {
+        info_widget_->SetEngineStateText("Create ok");
+    }
+    else {
+        info_widget_->SetEngineStateText("Failed to create");
+    }
+}
+
+void OnlineWidget::OnlineRoomEnter(RoomId room_id) {
+    client_->Enter(room_id);
+    bool res = false;
+    QEventLoop loop;
+    QObject::connect(client_, &OnlineClient::ReceivedStatus, this, [&loop, &res](bool status){
+        res = status;
+        loop.quit();
+    });
+    loop.exec();
+    if (res) {
+        info_widget_->SetEngineStateText("Enter ok");
+        client_->SetRoomId(room_id);
+    }
+    else {
+        info_widget_->SetEngineStateText("Failed to enter");
     }
 }
 
@@ -117,6 +163,22 @@ void OnlineWidget::HandleBoardSceneKeyPressEvent(QKeyEvent *event) {
 void OnlineWidget::NbestValueChanged(int new_value) {
    current_mode_ = TranslateModeToPtr(current_mode_->NbestValueChanged(new_value));
 }
+
+
+// online client events
+
+void OnlineWidget::HandleOnlineReceivedStatus(bool status) {
+    current_mode_ = TranslateModeToPtr(current_mode_->HandleOnlineReceivedStatus(status));
+}
+
+void OnlineWidget::HandleOnlineReceivedInit(BoardAction action) {
+    current_mode_ = TranslateModeToPtr(current_mode_->HandleOnlineReceivedInit(action));
+}
+
+void OnlineWidget::HandleOnlineReceivedUpdate(BoardAction action) {
+    current_mode_ = TranslateModeToPtr(current_mode_->HandleOnlineReceivedUpdate(action));
+}
+
 
 
 /// utility

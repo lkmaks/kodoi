@@ -29,6 +29,10 @@ public:
 
     virtual OnlineMode NbestValueChanged(int new_value);
 
+    virtual OnlineMode HandleOnlineReceivedStatus(bool status);
+    virtual OnlineMode HandleOnlineReceivedInit(BoardAction action);
+    virtual OnlineMode HandleOnlineReceivedUpdate(BoardAction action);
+
     void TryMakeMove(QPair<int, int> cell);
     void TryUndo();
     void TryUndoUntil(QPair<int, int> cell);
@@ -38,6 +42,7 @@ public:
     void Undo();
     void UndoUntil(QPair<int, int> cell);
     void Redo();
+    void ApplyBoardAction(BoardAction action);
 
     void SetViewMarks(bool show);
     void SetLastMoveHighlight(bool show);

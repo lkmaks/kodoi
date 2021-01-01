@@ -12,12 +12,25 @@ MainWindow::MainWindow(QWidget *parent)
     settings_ = new Settings();
     online_widget_ = new OnlineWidget(settings_, this);
 
-    menu_ = menuBar()->addMenu("Settings");
+    auto menu_settings = menuBar()->addMenu("Settings");
     QAction *engine_setup = new QAction("Engine", this);
-    menu_->addAction(engine_setup);
+    menu_settings->addAction(engine_setup);
     connect(engine_setup, &QAction::triggered, this, &MainWindow::EngineSetup);
 
+    auto menu_online = menuBar()->addMenu("Online");
+
+    QAction *create = new QAction("Create table", this);
+    menu_online->addAction(create);
+    connect(create, &QAction::triggered, this, &MainWindow::OnlineCreate);
+
+    QAction *enter = new QAction("Enter table", this);
+    menu_online->addAction(enter);
+    connect(enter, &QAction::triggered, this, &MainWindow::OnlineEnter);
+
+
     connect(this, &MainWindow::SettingsUpdated, online_widget_, &OnlineWidget::AppSettingsUpdated);
+    connect(this, &MainWindow::OnlineRoomCreate, online_widget_, &OnlineWidget::OnlineRoomCreate);
+    connect(this, &MainWindow::OnlineRoomEnter, online_widget_, &OnlineWidget::OnlineRoomEnter);
 
     setCentralWidget(online_widget_);
     setMinimumSize(1200, 800);
@@ -34,6 +47,34 @@ void MainWindow::EngineSetup() {
         emit SettingsUpdated(SettingsField::ENGINE_CMD);
     }
 }
+
+void MainWindow::OnlineCreate() {
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Table id:"),
+                                             tr(""), QLineEdit::Normal,
+                                             "", &ok);
+    if (ok) {
+        RoomId room_id = text.toUInt(&ok);
+        if (ok) {
+            emit OnlineRoomCreate(room_id);
+        }
+    }
+}
+
+
+void MainWindow::OnlineEnter() {
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Table id:"),
+                                             tr(""), QLineEdit::Normal,
+                                             "", &ok);
+    if (ok) {
+        RoomId room_id = text.toUInt(&ok);
+        if (ok) {
+            emit OnlineRoomEnter(room_id);
+        }
+    }
+}
+
 
 MainWindow::~MainWindow()
 {
