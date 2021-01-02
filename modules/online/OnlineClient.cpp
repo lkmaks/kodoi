@@ -8,7 +8,7 @@ OnlineClient::OnlineClient(QObject *parent) : QObject(parent)
     data_ = new QByteArray();
     sock_ = new QTcpSocket();
     connect(sock_, &QTcpSocket::readyRead, this, &OnlineClient::SocketReadyRead);
-    sock_->connectToHost("54.146.159.82", 12345);
+    sock_->connectToHost("18.196.82.235", 12345);
     //sock_->connectToHost("127.0.0.1", 12345);
     sock_->waitForConnected();
     last_msg_time_ = QDateTime::currentDateTime();
