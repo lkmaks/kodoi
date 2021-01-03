@@ -1,7 +1,7 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
-#include <vector>
+#include <inttypes.h>
 
 enum class StoneColor {
     WHITE,
@@ -38,6 +38,6 @@ enum class SettingsField {
 };
 
 using EngineEpochId = int;
-using OnlineEpochId = size_t;
+using OnlineEpochId = uint64_t;
 
 #endif // ENUMS_H
