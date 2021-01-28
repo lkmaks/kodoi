@@ -40,10 +40,6 @@ public:
     EngineEpochId pondering_epoch_id = 0;
     QVector<QGraphicsItem*> eval_circles;
     int nbest_value = 3;
-
-    /// now online part
-
-    OnlineEpochId online_epoch_id = 0;
 };
 
 #endif // ONLINECONTEXTSTORAGE_H

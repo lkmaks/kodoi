@@ -104,7 +104,7 @@ void ExplorerModeBase::RenderMarks() {
 
     if (tools_.storage->view_marks) {
         // draw new marks
-        auto cur_node = tools_.board->tree_->GetCurrentNode();
+        auto cur_node = tools_.board->GetTree()->GetCurrentNode();
         for (auto pos : cur_node->children.keys()) {
            auto mark = tools_.painter->DrawMoveMark(pos, tools_.board->GetCurrentColor());
            tools_.storage->marks.push_back(mark);

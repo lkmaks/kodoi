@@ -9,8 +9,9 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    config_ = new Config();
     settings_ = new Settings();
-    online_widget_ = new OnlineWidget(settings_, this);
+    online_widget_ = new OnlineWidget(config_, settings_, this);
 
     auto menu_settings = menuBar()->addMenu("Settings");
     QAction *engine_setup = new QAction("Engine", this);
@@ -54,7 +55,7 @@ void MainWindow::OnlineCreate() {
                                              tr(""), QLineEdit::Normal,
                                              "", &ok);
     if (ok) {
-        RoomId room_id = text.toUInt(&ok);
+        RoomId room_id = text;
         if (ok) {
             emit OnlineRoomCreate(room_id);
         }
@@ -68,7 +69,7 @@ void MainWindow::OnlineEnter() {
                                              tr(""), QLineEdit::Normal,
                                              "", &ok);
     if (ok) {
-        RoomId room_id = text.toUInt(&ok);
+        RoomId room_id = text;
         if (ok) {
             emit OnlineRoomEnter(room_id);
         }

@@ -11,7 +11,6 @@
 #include "OnlineTools.h"
 #include "OnlineMode.h"
 #include "OnlineContextStorage.h"
-#include "protocol/BoardAction.h"
 
 
 class OnlineWidget : public QWidget
@@ -19,7 +18,7 @@ class OnlineWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit OnlineWidget(Settings *settings, QWidget *parent = nullptr);
+    explicit OnlineWidget(Config *config, Settings *settings, QWidget *parent = nullptr);
 
     void AppSettingsUpdated(SettingsField field);
 
@@ -54,13 +53,14 @@ private:
     // logical board tools
 
     AbstractBoard *board_;
+    OnlineBoard *online_board_;
     BoardScene *board_scene_;
     BoardPainter *painter_;
     EngineWrapper *engine_wrapper_;
     OnlineContextStorage *storage_;
 
-    // online tools
-    OnlineClient *client_;
+    // Online session
+    OnlineSession *client_;
 
     // managers
     EngineViewer *engine_viewer_;

@@ -44,14 +44,15 @@ SOURCES += \
         modules/explorer/BoardContextStorage.cpp \
         modules/explorer/ExplorerMode.cpp \
         modules/explorer/MainWidget.cpp \
-        modules/online/OnlineClient.cpp \
+        modules/online/OnlineBoard.cpp \
         modules/online/OnlineContextStorage.cpp \
         modules/online/OnlineMode.cpp \
+        modules/online/OnlineSession.cpp \
         modules/online/OnlineWidget.cpp \
         MainWindow.cpp \
         main.cpp \
         modules/online/protocol/Message.cpp \
-        modules/online/protocol/Response.cpp
+        modules/online/protocol/helpers.cpp
 
 HEADERS += \
         common/AbstractBoard.h \
@@ -75,17 +76,18 @@ HEADERS += \
         modules/explorer/ExplorerMode.h \
         modules/explorer/ExplorerTools.h \
         modules/explorer/MainWidget.h \
-        modules/online/OnlineClient.h \
+        modules/online/OnlineBoard.h \
         modules/online/OnlineContextStorage.h \
         modules/online/OnlineMode.h \
+        modules/online/OnlineSession.h \
         modules/online/OnlineTools.h \
         modules/online/OnlineWidget.h \
         Config.h \
         MainWindow.h \
         modules/online/protocol/BoardAction.h \
         modules/online/protocol/Message.h \
-        modules/online/protocol/Response.h \
         modules/online/protocol/helpers.h \
+        modules/online/protocol/serialization.h \
         modules/online/protocol/types.h
 
 # Default rules for deployment.

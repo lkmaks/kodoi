@@ -7,20 +7,18 @@
 #include <QDateTime>
 
 #include "common/Enums.h"
-#include "protocol/BoardAction.h"
 #include "protocol/Message.h"
 
+using Protocol::Message;
 
-class OnlineClient : public QObject
+class OnlineSession : public QObject
 {
     Q_OBJECT
 
 public:
-    OnlineClient(QObject *parent = nullptr);
+    OnlineSession(QObject *parent = nullptr);
 
-    void SetRoomId(RoomId room_id);
-
-    // messages types
+    // send message
     void Create(RoomId room_id);
     void Enter(RoomId room_id);
     void MakeBoardAction(BoardAction action);
@@ -32,7 +30,8 @@ public:
     void Redo(OnlineEpochId epoch_id);
 
 signals:
-    void ReceivedStatus(bool status);
+    // signals about receiveing messages
+    void ReceivedStatus(QString status);
     void ReceivedInit(BoardAction action);
     void ReceivedUpdate(BoardAction action);
 private:
@@ -40,17 +39,11 @@ private:
     // slot
     void SocketReadyRead();
 
-    // low level to send commands
+    // low level method to send messages
     void SendMessage(Message msg);
 
     QTcpSocket *sock_;
     QByteArray *data_;
-    RoomId room_id_;
-
-    // kostyl
-    bool CheckTimeout();
-    QDateTime last_msg_time_;
-    int msecs_timeout_ = 50;
 };
 
 #endif // ONLINECLIENT_H

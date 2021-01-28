@@ -28,6 +28,7 @@ signals:
 
 private:
     OnlineWidget *online_widget_;
+    Config *config_;
     Settings *settings_;
 };
 

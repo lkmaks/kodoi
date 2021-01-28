@@ -38,6 +38,5 @@ enum class SettingsField {
 };
 
 using EngineEpochId = int;
-using OnlineEpochId = size_t;
 
 #endif // ENUMS_H

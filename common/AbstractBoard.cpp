@@ -118,3 +118,8 @@ bool AbstractBoard::IsRenjuLine(QPair<int, int> p1, QPair<int, int> p2) {
     int y = p1.second - p2.second;
     return abs(x) == abs(y) || x * y == 0;
 }
+
+
+ExplorerTree *AbstractBoard::GetTree() {
+    return tree_;
+}

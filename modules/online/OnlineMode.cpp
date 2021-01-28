@@ -44,45 +44,37 @@ OnlineMode OnlineModeBase::HandleOnlineReceivedStatus(bool status) {
 
 
 OnlineMode OnlineModeBase::HandleOnlineReceivedInit(BoardAction action) {
-    tools_.storage->online_epoch_id = action.epoch_id;
-    ApplyBoardAction(action);
+    tools_.online_board->ApplyAction(action);
+    RenderVisualBoardAction(action);
     return mode_;
 }
 
 
 OnlineMode OnlineModeBase::HandleOnlineReceivedUpdate(BoardAction action) {
-    if (action.epoch_id != tools_.storage->online_epoch_id) {
-        // that is very, very bad, not supposed to happen
-        return mode_;
-    }
-    std::cerr << "update ok" << std::endl;
-    tools_.storage->online_epoch_id += 1; // increase epoch with every update
-    ApplyBoardAction(action);
+    tools_.online_board->ApplyAction(action);
+    RenderVisualBoardAction(action);
     return mode_;
 }
 
 
 void OnlineModeBase::TryMakeMove(QPair<int, int> cell) {
-    tools_.client->MakeMove(cell, tools_.storage->online_epoch_id);
+    tools_.client->MakeMove(cell, tools_.online_board->GetEpochId());
 }
 
 void OnlineModeBase::TryUndo() {
-    tools_.client->Undo(tools_.storage->online_epoch_id);
+    tools_.client->Undo(tools_.online_board->GetEpochId());
 }
 
 void OnlineModeBase::TryUndoUntil(QPair<int, int> cell) {
-    tools_.client->UndoUntil(cell, tools_.storage->online_epoch_id);
+    tools_.client->UndoUntil(cell, tools_.online_board->GetEpochId());
 }
 
 void OnlineModeBase::TryRedo() {
-    tools_.client->Redo(tools_.storage->online_epoch_id);
+    tools_.client->Redo(tools_.online_board->GetEpochId());
 }
 
 
-void OnlineModeBase::MakeMove(QPair<int, int> cell) {
-    // update abstract board
-    tools_.board->MakeMove(cell);
-
+void OnlineModeBase::RenderMakeMove(QPair<int, int> cell) {
     // draw new stone
     auto stone_txt_pair = tools_.painter->DrawNumberedStone(cell,
                                                       opposite_color(tools_.board->GetCurrentColor()),
@@ -94,47 +86,39 @@ void OnlineModeBase::MakeMove(QPair<int, int> cell) {
     UpdatePonderingPosition(tools_.storage->nbest_value);
 }
 
-void OnlineModeBase::Undo() {
-    bool succ = tools_.board->Undo();
-    if (succ) {
-        // really commiting undo
-        tools_.painter->RemoveItem(tools_.storage->stones_pos.back());
-        //delete tools_.storage->stones_pos.back();
-        tools_.storage->stones_pos.pop_back();
+void OnlineModeBase::RenderUndo() {
+    tools_.painter->RemoveItem(tools_.storage->stones_pos.back());
+    tools_.storage->stones_pos.pop_back();
 
-        tools_.painter->RemoveItem(tools_.storage->numbers_pos.back());
-        //delete tools_.storage->numbers_pos.back();
-        tools_.storage->numbers_pos.pop_back();
+    tools_.painter->RemoveItem(tools_.storage->numbers_pos.back());
+    tools_.storage->numbers_pos.pop_back();
 
-        RenderAuxiliary();
-        UpdatePonderingPosition(tools_.storage->nbest_value);
-    }
-}
-
-void OnlineModeBase::UndoUntil(QPair<int, int> cell) {
-    while (!tools_.board->Empty() && tools_.board->GetLastMove() != cell) {
-        Undo();
-    }
-    RenderMarks();
+    RenderAuxiliary();
     UpdatePonderingPosition(tools_.storage->nbest_value);
 }
 
-void OnlineModeBase::Redo() {
-    // update abstract board
-    bool succ = tools_.board->Redo();
+void OnlineModeBase::RenderUndoUntil() {
+    while (tools_.storage->stones_pos.size() > tools_.board->MovesCount()) {
+        tools_.painter->RemoveItem(tools_.storage->stones_pos.back());
+        tools_.storage->stones_pos.pop_back();
 
-    if (succ) {
-        // draw new stone
-        auto cell = tools_.board->GetLastMove();
-        auto stone_txt_pair = tools_.painter->DrawNumberedStone(cell,
-                                                          opposite_color(tools_.board->GetCurrentColor()),
-                                                          tools_.board->MovesCount());
-        tools_.storage->stones_pos.push_back(stone_txt_pair.first);
-        tools_.storage->numbers_pos.push_back(stone_txt_pair.second);
-
-        RenderAuxiliary();
-        UpdatePonderingPosition(tools_.storage->nbest_value);
+        tools_.painter->RemoveItem(tools_.storage->numbers_pos.back());
+        tools_.storage->numbers_pos.pop_back();
     }
+    RenderAuxiliary();
+    UpdatePonderingPosition(tools_.storage->nbest_value);
+}
+
+void OnlineModeBase::RenderRedo() {
+    auto cell = tools_.board->GetLastMove();
+    auto stone_txt_pair = tools_.painter->DrawNumberedStone(cell,
+                                                      opposite_color(tools_.board->GetCurrentColor()),
+                                                      tools_.board->MovesCount());
+    tools_.storage->stones_pos.push_back(stone_txt_pair.first);
+    tools_.storage->numbers_pos.push_back(stone_txt_pair.second);
+
+    RenderAuxiliary();
+    UpdatePonderingPosition(tools_.storage->nbest_value);
 }
 
 
@@ -151,7 +135,7 @@ void OnlineModeBase::RenderMarks() {
 
     if (tools_.storage->view_marks) {
         // draw new marks
-        auto cur_node = tools_.board->tree_->GetCurrentNode();
+        auto cur_node = tools_.board->GetTree()->GetCurrentNode();
         for (auto pos : cur_node->children.keys()) {
            auto mark = tools_.painter->DrawMoveMark(pos, tools_.board->GetCurrentColor());
            tools_.storage->marks.push_back(mark);
@@ -159,18 +143,18 @@ void OnlineModeBase::RenderMarks() {
     }
 }
 
-void OnlineModeBase::ApplyBoardAction(BoardAction action) {
+void OnlineModeBase::RenderVisualBoardAction(BoardAction action) {
     if (action.type == BoardActionType::MOVE) {
-        MakeMove(action.coords);
+        RenderMakeMove(action.coords);
     }
     else if (action.type == BoardActionType::UNDO) {
-        Undo();
+        RenderUndo();
     }
     else if (action.type == BoardActionType::UNDO_UNTIL) {
-        UndoUntil(action.coords);
+        RenderUndoUntil();
     }
     else if (action.type == BoardActionType::REDO) {
-        Redo();
+        RenderRedo();
     }
 }
 

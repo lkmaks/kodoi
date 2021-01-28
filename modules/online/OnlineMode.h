@@ -33,27 +33,28 @@ public:
     virtual OnlineMode HandleOnlineReceivedInit(BoardAction action);
     virtual OnlineMode HandleOnlineReceivedUpdate(BoardAction action);
 
+    void SetViewMarks(bool show);
+    void SetLastMoveHighlight(bool show);
+
     void TryMakeMove(QPair<int, int> cell);
     void TryUndo();
     void TryUndoUntil(QPair<int, int> cell);
     void TryRedo();
 
-    void MakeMove(QPair<int, int> cell);
-    void Undo();
-    void UndoUntil(QPair<int, int> cell);
-    void Redo();
-    void ApplyBoardAction(BoardAction action);
+    void RenderVisualBoardAction(BoardAction action);
+    void RenderMakeMove(QPair<int, int> cell);
+    void RenderUndo();
+    void RenderUndoUntil();
+    void RenderRedo();
 
-    void SetViewMarks(bool show);
-    void SetLastMoveHighlight(bool show);
-
-    void StartPondering();
-    void UpdatePonderingPosition(int nbest_value); // by board
-    void StopPondering();
     //update next move marks on the board according to the tree
     void RenderMarks();
     void RenderLastMoveHighlight();
     void RenderAuxiliary();
+
+    void StartPondering();
+    void UpdatePonderingPosition(int nbest_value); // by board
+    void StopPondering();
 
 
 signals:

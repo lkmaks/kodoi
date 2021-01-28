@@ -10,17 +10,18 @@
 #include "OnlineWidget.h"
 
 
-OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
+OnlineWidget::OnlineWidget(Config *config, Settings *settings, QWidget *parent) :
     QWidget(parent), settings_(settings)
 {
     qDebug() << QDir::currentPath() << endl;
 
-    config_ = new Config();
+    config_ = config;
     settings_->engine_cmd = "engine.exe";
 
     // set up Online entities (alg, paint, common storage between modes)
-    board_scene_ = new BoardScene();
     board_ = new AbstractBoard(config_->board_size);
+    online_board_ = new OnlineBoard(board_);
+    board_scene_ = new BoardScene();
     painter_ = new BoardPainter(config_, board_scene_);
     storage_ = new OnlineContextStorage(config_);
     engine_wrapper_ = new EngineWrapper(settings_->engine_cmd, this);
@@ -47,13 +48,13 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
     engine_viewer_ = new EngineViewer(color_bar_, painter_, info_widget_, &storage_->pondering_epoch_id);
 
     // OnlineClient tool
-    client_ = new OnlineClient();
+    client_ = new OnlineSession();
 
     // create tools for high-entity managers
     BoardOnlineTools tools;
     tools.config = config_;
     tools.settings = settings_;
-    tools.board = board_;
+    tools.online_board = online_board_;
     tools.painter = painter_;
     tools.engine_wrapper = engine_wrapper_;
     tools.color_bar = color_bar_;
@@ -75,8 +76,8 @@ OnlineWidget::OnlineWidget(Settings *settings, QWidget *parent) :
     QObject::connect(info_widget_, &InfoWidget::NbestValueChanged, this, &OnlineWidget::NbestValueChanged);
 
     //QObject::connect(client_, &OnlineClient::ReceivedStatus, this, &OnlineWidget::HandleOnlineReceivedStatus);
-    QObject::connect(client_, &OnlineClient::ReceivedInit, this, &OnlineWidget::HandleOnlineReceivedInit);
-    QObject::connect(client_, &OnlineClient::ReceivedUpdate, this, &OnlineWidget::HandleOnlineReceivedUpdate);
+    QObject::connect(client_, &OnlineSession::ReceivedInit, this, &OnlineWidget::HandleOnlineReceivedInit);
+    QObject::connect(client_, &OnlineSession::ReceivedUpdate, this, &OnlineWidget::HandleOnlineReceivedUpdate);
 
     storage_ = new OnlineContextStorage(config_);
 
@@ -105,40 +106,6 @@ void OnlineWidget::AppSettingsUpdated(SettingsField field) {
     }
 }
 
-void OnlineWidget::OnlineRoomCreate(RoomId room_id) {
-    client_->Create(room_id);
-    bool res = false;
-    QEventLoop loop;
-    QObject::connect(client_, &OnlineClient::ReceivedStatus, this, [&loop, &res](bool status){
-        res = status;
-        loop.quit();
-    });
-    loop.exec();
-    if (res) {
-        info_widget_->SetEngineStateText("Create ok");
-    }
-    else {
-        info_widget_->SetEngineStateText("Failed to create");
-    }
-}
-
-void OnlineWidget::OnlineRoomEnter(RoomId room_id) {
-    client_->Enter(room_id);
-    bool res = false;
-    QEventLoop loop;
-    QObject::connect(client_, &OnlineClient::ReceivedStatus, this, [&loop, &res](bool status){
-        res = status;
-        loop.quit();
-    });
-    loop.exec();
-    if (res) {
-        info_widget_->SetEngineStateText("Enter ok");
-        client_->SetRoomId(room_id);
-    }
-    else {
-        info_widget_->SetEngineStateText("Failed to enter");
-    }
-}
 
 // scene events
 

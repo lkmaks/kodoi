@@ -11,8 +11,9 @@
 #include "common/BoardScene.h"
 #include "common/InfoWidget.h"
 #include "common/BoardView.h"
+#include "OnlineBoard.h"
 #include "OnlineContextStorage.h"
-#include "OnlineClient.h"
+#include "OnlineSession.h"
 
 struct BoardOnlineTools {
     const Config *config;
@@ -23,8 +24,9 @@ struct BoardOnlineTools {
     ColorBar *color_bar;
     InfoWidget *info_widget;
     EngineViewer *engine_viewer;
-    OnlineClient *client;
+    OnlineSession *client;
     OnlineContextStorage *storage;
+    OnlineBoard *online_board;
     AbstractBoard *board;
 };
 
