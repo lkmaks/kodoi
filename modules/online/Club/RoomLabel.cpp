@@ -9,4 +9,6 @@ RoomLabel::RoomLabel(QString room_id, QWidget *parent) : QWidget(parent)
     auto *vlt = new QVBoxLayout(this);
     vlt->addWidget(room_id_);
     vlt->addWidget(enter_button_);
+
+    connect(enter_button_, &QPushButton::pressed, this, [this](){ emit EnterPressed(); });
 }

@@ -33,6 +33,7 @@ namespace Protocol {
     const Value VALUE_METHOD_ENTER = "enter";
     const Value VALUE_METHOD_LEAVE = "leave";
     const Value VALUE_METHOD_ACTION = "action";
+    const Value VALUE_METHOD_NEED_INIT = "need_init";
 
 
     const Key KEY_STATUS = "status";
@@ -80,6 +81,7 @@ namespace Protocol {
         static Message Enter(RoomId room_id);
         static Message Leave(RoomId room_id);
         static Message Action(BoardAction);
+        static Message NeedInit();
 
         /// convinience retrievers
 

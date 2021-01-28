@@ -8,7 +8,7 @@
 class BoardLayout : public QLayout
 {
 public:
-    enum Position { Board, Bar, InfoWidget };
+    enum Position { Board, Bar, InfoWidget, LeaveWidget };
 
     explicit BoardLayout(QWidget *parent, Config *config, int margin = 0, int spacing = -1);
     BoardLayout(int spacing = -1);

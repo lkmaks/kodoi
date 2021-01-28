@@ -19,6 +19,7 @@ public:
     explicit OnlineClubWidget(Config *config, Settings *settings, OnlineSession *session, QWidget *parent = nullptr);
 
     void TryCreateNewRoom(RoomId room_id);
+    void TryEnterRoom(RoomId room_id);
 private:
     Config *config_;
     Settings *settings_;

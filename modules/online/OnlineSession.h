@@ -25,7 +25,9 @@ public:
 
     void CreateRoom(RoomId room_id);
     void EnterRoom(RoomId room_id);
+    void LeaveRoom(RoomId room_id);
     void MakeBoardAction(BoardAction action);
+    void NeedInit();
 
     /// convinience
     void MakeMove(QPair<int, int> cell, OnlineEpochId epoch_id);

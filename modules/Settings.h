@@ -6,7 +6,7 @@
 struct Settings {
     bool view_marks = true;
     bool view_numbers = true;
-    QString engine_cmd = "wine /home/max/qt_projects/kodoi/engine.exe";
+    QString engine_cmd = "engine.exe";
 };
 
 

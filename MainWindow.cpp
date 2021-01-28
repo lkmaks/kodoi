@@ -40,6 +40,20 @@ void MainWindow::EngineSetup() {
     }
 }
 
+void MainWindow::EnterRoom(RoomId room_id) {
+    cur_widget_->close();
+    delete cur_widget_;
+    cur_widget_ = new OnlineWidget(config_, settings_, online_session_, room_id, this);
+    setCentralWidget(cur_widget_);
+}
+
+void MainWindow::LeaveRoom() {
+    cur_widget_->close();
+    delete cur_widget_;
+    cur_widget_ = new OnlineClubWidget(config_, settings_, online_session_, this);
+    setCentralWidget(cur_widget_);
+}
+
 
 MainWindow::~MainWindow()
 {

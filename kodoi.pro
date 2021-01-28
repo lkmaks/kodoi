@@ -47,6 +47,7 @@ SOURCES += \
         modules/online/Club/CreateForm.cpp \
         modules/online/Club/OnlineClubWidget.cpp \
         modules/online/Club/RoomLabel.cpp \
+        modules/online/Room/LeaveWidget.cpp \
         modules/online/Room/OnlineBoard.cpp \
         modules/online/Room/OnlineContextStorage.cpp \
         modules/online/Room/OnlineMode.cpp \
@@ -81,6 +82,7 @@ HEADERS += \
         modules/online/Club/CreateForm.h \
         modules/online/Club/OnlineClubWidget.h \
         modules/online/Club/RoomLabel.h \
+        modules/online/Room/LeaveWidget.h \
         modules/online/Room/OnlineBoard.h \
         modules/online/Room/OnlineContextStorage.h \
         modules/online/Room/OnlineMode.h \

@@ -7,10 +7,11 @@
 #include <QSet>
 #include <QTextEdit>
 
-
 #include "OnlineTools.h"
 #include "OnlineMode.h"
 #include "OnlineContextStorage.h"
+
+#include "LeaveWidget.h"
 
 
 class OnlineWidget : public QWidget
@@ -18,12 +19,12 @@ class OnlineWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit OnlineWidget(Config *config, Settings *settings, QWidget *parent = nullptr);
+    explicit OnlineWidget(Config *config, Settings *settings, OnlineSession *sess, RoomId room_id_, QWidget *parent = nullptr);
 
     void AppSettingsUpdated(SettingsField field);
 
-    void OnlineRoomCreate(RoomId room_id);
-    void OnlineRoomEnter(RoomId room_id);
+    void OnlineRoomCreate(RoomId room_id_);
+    void OnlineRoomEnter(RoomId room_id_);
 
     // slots coming from user interaction
 
@@ -41,14 +42,20 @@ public:
     void HandleOnlineReceivedInit(BoardAction action);
     void HandleOnlineReceivedUpdate(BoardAction action);
 
+    // Leave Room
+    void Leave();
+
 private:
     Config *config_;
     Settings *settings_;
+
+    RoomId room_id_;
 
     // widgets
     BoardView *board_view_;
     ColorBar *color_bar_;
     InfoWidget *info_widget_;
+    LeaveWidget *leave_widget_;
 
     // logical board tools
 
@@ -60,7 +67,7 @@ private:
     OnlineContextStorage *storage_;
 
     // Online session
-    OnlineSession *client_;
+    OnlineSession *session_;
 
     // managers
     EngineViewer *engine_viewer_;

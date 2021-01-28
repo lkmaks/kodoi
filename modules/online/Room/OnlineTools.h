@@ -24,7 +24,7 @@ struct BoardOnlineTools {
     ColorBar *color_bar;
     InfoWidget *info_widget;
     EngineViewer *engine_viewer;
-    OnlineSession *client;
+    OnlineSession *session;
     OnlineContextStorage *storage;
     OnlineBoard *online_board;
     AbstractBoard *board;

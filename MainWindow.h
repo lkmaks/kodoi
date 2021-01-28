@@ -19,6 +19,9 @@ public:
 
     void EngineSetup();
 
+    void EnterRoom(RoomId);
+    void LeaveRoom();
+
 signals:
     void SettingsUpdated(SettingsField field);
 

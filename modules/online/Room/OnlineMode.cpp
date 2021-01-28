@@ -58,19 +58,19 @@ OnlineMode OnlineModeBase::HandleOnlineReceivedUpdate(BoardAction action) {
 
 
 void OnlineModeBase::TryMakeMove(QPair<int, int> cell) {
-    tools_.client->MakeMove(cell, tools_.online_board->GetEpochId());
+    tools_.session->MakeMove(cell, tools_.online_board->GetEpochId());
 }
 
 void OnlineModeBase::TryUndo() {
-    tools_.client->Undo(tools_.online_board->GetEpochId());
+    tools_.session->Undo(tools_.online_board->GetEpochId());
 }
 
 void OnlineModeBase::TryUndoUntil(QPair<int, int> cell) {
-    tools_.client->UndoUntil(cell, tools_.online_board->GetEpochId());
+    tools_.session->UndoUntil(cell, tools_.online_board->GetEpochId());
 }
 
 void OnlineModeBase::TryRedo() {
-    tools_.client->Redo(tools_.online_board->GetEpochId());
+    tools_.session->Redo(tools_.online_board->GetEpochId());
 }
 
 

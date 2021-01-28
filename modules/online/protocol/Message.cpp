@@ -95,6 +95,10 @@ namespace Protocol {
         return msg;
     }
 
+    Message Message::NeedInit() {
+        return Message(Dict({{KEY_METHOD, VALUE_METHOD_NEED_INIT}}));
+    }
+
 
     /// retrievers
 

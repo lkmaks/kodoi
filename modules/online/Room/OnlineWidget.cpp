@@ -6,18 +6,15 @@
 #include <QThread>
 #include <QDir>
 #include <QEventLoop>
+#include <QVBoxLayout>
 
+#include "MainWindow.h"
 #include "OnlineWidget.h"
 
 
-OnlineWidget::OnlineWidget(Config *config, Settings *settings, QWidget *parent) :
-    QWidget(parent), settings_(settings)
+OnlineWidget::OnlineWidget(Config *config, Settings *settings, OnlineSession *sess, RoomId room_id, QWidget *parent) :
+    QWidget(parent), config_(config), settings_(settings), room_id_(room_id), session_(sess)
 {
-    qDebug() << QDir::currentPath() << endl;
-
-    config_ = config;
-    settings_->engine_cmd = "engine.exe";
-
     // set up Online entities (alg, paint, common storage between modes)
     board_ = new AbstractBoard(config_->board_size);
     online_board_ = new OnlineBoard(board_);
@@ -27,33 +24,39 @@ OnlineWidget::OnlineWidget(Config *config, Settings *settings, QWidget *parent) 
     engine_wrapper_ = new EngineWrapper(settings_->engine_cmd, this);
 
     // set up grid of this widget
-    auto lt = new BoardLayout(this, config_);
-    setLayout(lt);
+    auto blt = new BoardLayout(this, config_);
+    setLayout(blt);
+
+    // leave widget
+    leave_widget_ = new LeaveWidget(this);
+    blt->addWidget(leave_widget_, BoardLayout::LeaveWidget);
 
     // board_view widget
     board_view_ = new BoardView(config_, this);
-    lt->addWidget(board_view_, BoardLayout::Board);
+    blt->addWidget(board_view_, BoardLayout::Board);
     board_view_->setScene(board_scene_);
     board_view_->setStyleSheet("border: 0px");
 
     // color bar widget
     ColorBar *color_bar_ = new ColorBar(config_, this);
-    lt->addWidget(color_bar_, BoardLayout::Bar);
+    blt->addWidget(color_bar_, BoardLayout::Bar);
 
     // InfoWidget
     info_widget_ = new InfoWidget(config_, this);
-    lt->addWidget(info_widget_, BoardLayout::InfoWidget);
+    blt->addWidget(info_widget_, BoardLayout::InfoWidget);
+
 
     // EngineViewer manager
     engine_viewer_ = new EngineViewer(color_bar_, painter_, info_widget_, &storage_->pondering_epoch_id);
 
-    // OnlineClient tool
-    client_ = new OnlineSession();
+    // current session
+    session_ = sess;
 
     // create tools for high-entity managers
     BoardOnlineTools tools;
     tools.config = config_;
     tools.settings = settings_;
+    tools.board = board_;
     tools.online_board = online_board_;
     tools.painter = painter_;
     tools.engine_wrapper = engine_wrapper_;
@@ -61,7 +64,9 @@ OnlineWidget::OnlineWidget(Config *config, Settings *settings, QWidget *parent) 
     tools.info_widget = info_widget_;
     tools.engine_viewer = engine_viewer_;
     tools.storage = storage_;
-    tools.client = client_;
+    tools.session = session_;
+
+    QObject::connect(leave_widget_, &LeaveWidget::Leave, this, &OnlineWidget::Leave);
 
     QObject::connect(board_scene_, &BoardScene::mousePressEventSignal, this, &OnlineWidget::HandleBoardSceneMousePressEvent);
     QObject::connect(board_scene_, &BoardScene::mouseReleaseEventSignal, this, &OnlineWidget::HandleBoardSceneMouseReleaseEvent);
@@ -76,8 +81,8 @@ OnlineWidget::OnlineWidget(Config *config, Settings *settings, QWidget *parent) 
     QObject::connect(info_widget_, &InfoWidget::NbestValueChanged, this, &OnlineWidget::NbestValueChanged);
 
     //QObject::connect(client_, &OnlineClient::ReceivedStatus, this, &OnlineWidget::HandleOnlineReceivedStatus);
-    QObject::connect(client_, &OnlineSession::ReceivedInit, this, &OnlineWidget::HandleOnlineReceivedInit);
-    QObject::connect(client_, &OnlineSession::ReceivedUpdate, this, &OnlineWidget::HandleOnlineReceivedUpdate);
+    QObject::connect(session_, &OnlineSession::ReceivedInit, this, &OnlineWidget::HandleOnlineReceivedInit);
+    QObject::connect(session_, &OnlineSession::ReceivedUpdate, this, &OnlineWidget::HandleOnlineReceivedUpdate);
 
     storage_ = new OnlineContextStorage(config_);
 
@@ -87,9 +92,10 @@ OnlineWidget::OnlineWidget(Config *config, Settings *settings, QWidget *parent) 
     // set initial mode: default
     current_mode_ = default_mode_;
 
+    session_->NeedInit(); // we are ready to receive all init
 
     /// testing
-    info_widget_->SetEngineStateText(QDir::currentPath());
+//    info_widget_->SetEngineStateText(QDir::currentPath());
 //    client_->Create(1);
 //    client_->Enter(1);
 //    client_->SetRoomId(1);
@@ -147,6 +153,23 @@ void OnlineWidget::HandleOnlineReceivedUpdate(BoardAction action) {
     current_mode_ = TranslateModeToPtr(current_mode_->HandleOnlineReceivedUpdate(action));
 }
 
+
+
+// Leave
+
+void OnlineWidget::Leave() {
+    session_->LeaveRoom(room_id_);
+    bool res = false;
+    QEventLoop loop;
+    QObject::connect(session_, &OnlineSession::ReceivedStatus, this, [&loop, &res](QString status){
+        res = (status == "ok");
+        loop.quit();
+    });
+    loop.exec();
+    if (res) {
+        static_cast<MainWindow*>(parent())->LeaveRoom();
+    }
+}
 
 
 /// utility

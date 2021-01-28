@@ -32,9 +32,18 @@ void OnlineSession::EnterRoom(RoomId room_id) {
     //room_id_ = room_id;
 }
 
+void OnlineSession::LeaveRoom(RoomId room_id) {
+    SendMessage(Message::Leave(room_id));
+}
+
 void OnlineSession::MakeBoardAction(BoardAction action) {
     SendMessage(Message::Action(action));
 }
+
+void OnlineSession::NeedInit() {
+    SendMessage(Message::NeedInit());
+}
+
 
 void OnlineSession::MakeMove(QPair<int, int> cell, OnlineEpochId epoch_id) {
     BoardAction action;

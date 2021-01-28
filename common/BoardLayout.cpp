@@ -96,6 +96,9 @@ void BoardLayout::setGeometry(const QRect &rect)
             e->item->setGeometry({x, config_->board_layout_vpad,
                                   config_->board_layout_info_widget_width, d});
         }
+        else if (e->position == LeaveWidget) {
+            e->item->setGeometry({10, 10, 50, 50});
+        }
     }
 }
 
