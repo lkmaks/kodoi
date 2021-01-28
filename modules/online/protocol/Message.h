@@ -6,9 +6,9 @@
 #include <map>
 
 
-#include "types.h"
-#include "serialization.h"
+#include "../types.h"
 #include "BoardAction.h"
+#include "serialization.h"
 
 
 namespace Protocol {
@@ -25,6 +25,7 @@ namespace Protocol {
     const Value VALUE_METHOD_UPDATE = "update";
     const Value VALUE_METHOD_USER_ENTERED = "user_entered";
     const Value VALUE_METHOD_USER_LEFT = "user_left";
+    const Value VALUE_METHOD_ROOM_ADDED = "room_added";
 
     const Value VALUE_METHOD_LOGIN = "login";
     const Value VALUE_METHOD_ROOMS_LIST = "list";
@@ -69,11 +70,13 @@ namespace Protocol {
         static Message Update(BoardAction action);
         static Message UserEntered(QString name);
         static Message UserLeft(QString name);
+        static Message RoomAdded(QString name);
+
 
         // for client
         static Message Login(QString login, QString password);
         static Message RoomsList();
-        static Message Create(RoomId room_id);
+        static Message CreateRoom(RoomId room_id);
         static Message Enter(RoomId room_id);
         static Message Leave(RoomId room_id);
         static Message Action(BoardAction);
@@ -81,6 +84,7 @@ namespace Protocol {
         /// convinience retrievers
 
         BoardAction GetAction();
+        QString GetRoomId();
         QString GetStatus();
 
         bool IsCorrect();

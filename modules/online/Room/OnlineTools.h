@@ -13,7 +13,7 @@
 #include "common/BoardView.h"
 #include "OnlineBoard.h"
 #include "OnlineContextStorage.h"
-#include "OnlineSession.h"
+#include "../OnlineSession.h"
 
 struct BoardOnlineTools {
     const Config *config;

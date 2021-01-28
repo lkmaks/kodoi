@@ -44,15 +44,18 @@ SOURCES += \
         modules/explorer/BoardContextStorage.cpp \
         modules/explorer/ExplorerMode.cpp \
         modules/explorer/MainWidget.cpp \
-        modules/online/OnlineBoard.cpp \
-        modules/online/OnlineContextStorage.cpp \
-        modules/online/OnlineMode.cpp \
-        modules/online/OnlineSession.cpp \
-        modules/online/OnlineWidget.cpp \
-        MainWindow.cpp \
-        main.cpp \
+        modules/online/Club/CreateForm.cpp \
+        modules/online/Club/OnlineClubWidget.cpp \
+        modules/online/Club/RoomLabel.cpp \
+        modules/online/Room/OnlineBoard.cpp \
+        modules/online/Room/OnlineContextStorage.cpp \
+        modules/online/Room/OnlineMode.cpp \
+        modules/online/Room/OnlineWidget.cpp \
         modules/online/protocol/Message.cpp \
-        modules/online/protocol/helpers.cpp
+        modules/online/protocol/helpers.cpp \
+        modules/online/OnlineSession.cpp \
+        MainWindow.cpp \
+        main.cpp
 
 HEADERS += \
         common/AbstractBoard.h \
@@ -66,7 +69,6 @@ HEADERS += \
         common/Enums.h \
         common/ExplorerTree.h \
         common/InfoWidget.h \
-        modules/Settings.h \
         modules/drill/BoardDrillContextStorage.h \
         modules/drill/DrillInfoWidget.h \
         modules/drill/DrillMainWidget.h \
@@ -76,19 +78,23 @@ HEADERS += \
         modules/explorer/ExplorerMode.h \
         modules/explorer/ExplorerTools.h \
         modules/explorer/MainWidget.h \
-        modules/online/OnlineBoard.h \
-        modules/online/OnlineContextStorage.h \
-        modules/online/OnlineMode.h \
-        modules/online/OnlineSession.h \
-        modules/online/OnlineTools.h \
-        modules/online/OnlineWidget.h \
-        Config.h \
-        MainWindow.h \
+        modules/online/Club/CreateForm.h \
+        modules/online/Club/OnlineClubWidget.h \
+        modules/online/Club/RoomLabel.h \
+        modules/online/Room/OnlineBoard.h \
+        modules/online/Room/OnlineContextStorage.h \
+        modules/online/Room/OnlineMode.h \
+        modules/online/Room/OnlineWidget.h \
+        modules/online/Room/OnlineTools.h \
         modules/online/protocol/BoardAction.h \
         modules/online/protocol/Message.h \
         modules/online/protocol/helpers.h \
         modules/online/protocol/serialization.h \
-        modules/online/protocol/types.h
+        modules/online/OnlineSession.h \
+        modules/Settings.h \
+        Config.h \
+        MainWindow.h \
+        modules/online/types.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

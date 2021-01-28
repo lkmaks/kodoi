@@ -2,10 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "modules/online/OnlineWidget.h"
-#include "modules/explorer/MainWidget.h"
+
+#include "Config.h"
 #include "modules/Settings.h"
-#include "common/Enums.h"
+
+#include "modules/online/Room/OnlineWidget.h"
+#include "modules/online/Club/OnlineClubWidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -21,9 +23,12 @@ signals:
     void SettingsUpdated(SettingsField field);
 
 private:
-    OnlineWidget *online_widget_;
     Config *config_;
     Settings *settings_;
+
+    OnlineSession *online_session_;
+
+    QWidget *cur_widget_;
 };
 
 #endif // MAINWINDOW_H

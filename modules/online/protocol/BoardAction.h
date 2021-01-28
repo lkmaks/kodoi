@@ -2,7 +2,7 @@
 #define BOARDACTION_H
 
 #include <QPair>
-#include "types.h"
+#include "../types.h"
 
 enum class BoardActionType {
     MOVE,

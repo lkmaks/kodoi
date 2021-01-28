@@ -7,17 +7,22 @@ OnlineSession::OnlineSession(QObject *parent) : QObject(parent)
     data_ = new QByteArray();
     sock_ = new QTcpSocket();
     connect(sock_, &QTcpSocket::readyRead, this, &OnlineSession::SocketReadyRead);
-    sock_->connectToHost("18.196.82.235", 12345);
-    //sock_->connectToHost("127.0.0.1", 12345);
-    sock_->waitForConnected();
+    //sock_->connectToHost("18.196.82.235", 12345);
+    sock_->connectToHost("127.0.0.1", 12345);
+    auto st = sock_->waitForConnected();
+    std::cerr << 1;
 }
 
 
-void OnlineSession::Create(RoomId room_id) {
-    SendMessage(Message::Create(room_id));
+void OnlineSession::RoomsList() {
+    SendMessage(Message::RoomsList());
 }
 
-void OnlineSession::Enter(RoomId room_id) {
+void OnlineSession::CreateRoom(RoomId room_id) {
+    SendMessage(Message::CreateRoom(room_id));
+}
+
+void OnlineSession::EnterRoom(RoomId room_id) {
     SendMessage(Message::Enter(room_id));
 
     /// dont want to include this yet:
@@ -80,6 +85,9 @@ void OnlineSession::SocketReadyRead() {
         else if (method == Protocol::VALUE_METHOD_STATUS) {
             std::cerr << "emit status" << std::endl;
             emit ReceivedStatus(msg.GetStatus());
+        }
+        else if (method == Protocol::VALUE_METHOD_ROOM_ADDED) {
+            emit ReceivedRoomAdded(msg.GetRoomId());
         }
     }
 }

@@ -5,24 +5,26 @@
 
 #include "MainWindow.h"
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     config_ = new Config();
     settings_ = new Settings();
-    online_widget_ = new OnlineWidget(config_, settings_, this);
 
-    auto menu_settings = menuBar()->addMenu("Settings");
-    QAction *engine_setup = new QAction("Engine", this);
-    menu_settings->addAction(engine_setup);
-    connect(engine_setup, &QAction::triggered, this, &MainWindow::EngineSetup);
+//    auto menu_settings = menuBar()->addMenu("Settings");
+//    QAction *engine_setup = new QAction("Engine", this);
+//    menu_settings->addAction(engine_setup);
+//    connect(engine_setup, &QAction::triggered, this, &MainWindow::EngineSetup);
 
-    auto menu_online = menuBar()->addMenu("Online");
+//    auto menu_online = menuBar()->addMenu("Online");
 
-    connect(this, &MainWindow::SettingsUpdated, online_widget_, &OnlineWidget::AppSettingsUpdated);
+//    connect(this, &MainWindow::SettingsUpdated, online_widget_, &OnlineWidget::AppSettingsUpdated);
 
-    setCentralWidget(online_widget_);
+    online_session_ = new OnlineSession();
+
+    cur_widget_ = new OnlineClubWidget(config_, settings_, online_session_);
+
+    setCentralWidget(cur_widget_);
     setMinimumSize(1200, 800);
     setStyleSheet("background-color:#dddddd;");
 }

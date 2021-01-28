@@ -2,8 +2,8 @@
 #define BOARD_H
 
 #include "common/AbstractBoard.h"
-#include "protocol/types.h"
-#include "protocol/BoardAction.h"
+#include "../types.h"
+#include "../protocol/BoardAction.h"
 
 class OnlineBoard
 {

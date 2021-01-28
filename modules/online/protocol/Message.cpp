@@ -12,16 +12,6 @@ namespace Protocol {
 
     Message::Message(std::map<Key, Value> dict) : dict_(dict) {}
 
-
-    /// serialization
-
-//    template <class Archive>
-//    void Message::serialize(Archive &ar) {
-//        {
-//          ar(CEREAL_NVP(dict_));
-//        }
-//    }
-
     /// normal methods
 
     bool Message::has(Key key) {
@@ -70,6 +60,10 @@ namespace Protocol {
         return Message({{KEY_METHOD, VALUE_METHOD_USER_LEFT}, {KEY_USER_LEAVE_NAME, name}});
     }
 
+    Message Message::RoomAdded(QString name) {
+        return Message({{KEY_METHOD, VALUE_METHOD_ROOM_ADDED}, {KEY_ROOM_ID, name}});
+    }
+
     // client
 
     Message Message::Login(QString name, QString password) {
@@ -80,7 +74,7 @@ namespace Protocol {
         return Message(Dict({{KEY_METHOD, VALUE_METHOD_ROOMS_LIST}}));
     }
 
-    Message Message::Create(RoomId room_id) {
+    Message Message::CreateRoom(RoomId room_id) {
         return Message({{KEY_METHOD, VALUE_METHOD_CREATE},
                         {KEY_ROOM_ID, room_id}});
     }
@@ -111,6 +105,10 @@ namespace Protocol {
         res.coords.second = dict_[KEY_ACTION_COORD_2].toInt();
         res.epoch_id = dict_[KEY_ACTION_EPOCH_ID].toULongLong(); // 32 bit ok?
         return res;
+    }
+
+    QString Message::GetRoomId() {
+        return dict_[KEY_ROOM_ID];
     }
 
     QString Message::GetStatus() {
