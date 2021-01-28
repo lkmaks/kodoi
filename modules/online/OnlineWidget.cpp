@@ -89,6 +89,7 @@ OnlineWidget::OnlineWidget(Config *config, Settings *settings, QWidget *parent) 
 
 
     /// testing
+    info_widget_->SetEngineStateText(QDir::currentPath());
 //    client_->Create(1);
 //    client_->Enter(1);
 //    client_->SetRoomId(1);

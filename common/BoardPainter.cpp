@@ -16,6 +16,7 @@ QPair<int, int> BoardPainter::GetCell(QPointF pos) {
     return QPair<int, int>(i, j);
 }
 
+#include <QDebug>
 void BoardPainter::PaintEmptyBoard() {
     // draw background
     int background_bonus_left = 50;
@@ -29,7 +30,10 @@ void BoardPainter::PaintEmptyBoard() {
     int background_size_hor = cell_size_ * (board_size_ - 1) + background_bonus_hor;
     int background_size_vert = cell_size_ * (board_size_ - 1) + background_bonus_vert;
 
+    qDebug() << config_->lightwood_background << endl;
     QImage img(config_->lightwood_background);
+    qDebug() << img.sizeInBytes() << endl;
+
     img = img.copy(QRect(0, 0, background_size_hor, background_size_vert));
 
     QGraphicsItem *background = new QGraphicsPixmapItem(QPixmap::fromImage(img));
@@ -78,7 +82,7 @@ void BoardPainter::PaintEmptyBoard() {
     }
 
     QBrush dot_brush(Qt::black);
-    qreal r = (qreal)cell_size_ / 12;
+    qreal r = (qreal)cell_size_ / 16;
     board_scene_->addEllipse(cell_size_ * 7 - r, cell_size_ * 7 - r, 2 * r, 2 * r, line_pen, dot_brush);
     board_scene_->addEllipse(cell_size_ * 3 - r, cell_size_ * 3 - r, 2 * r, 2 * r, line_pen, dot_brush);
     board_scene_->addEllipse(cell_size_ * 3 - r, cell_size_ * 11 - r, 2 * r, 2 * r, line_pen, dot_brush);
@@ -165,21 +169,33 @@ QGraphicsItem *BoardPainter::DrawMoveMark(QPair<int, int> cell, StoneColor color
     int i = cell.first;
     int j = cell.second;
 
-    qreal mark_width = cell_size_ / 3;
-    QImage img;
+    qreal mark_width = cell_size_ / 4;
+//    QImage img;
+//    if (color == StoneColor::BLACK) {
+//        img = QImage(config_->black_stone);
+//    }
+//    else {
+//        img = QImage(config_->white_stone);
+//    }
+
+//    QGraphicsItem *mark = new QGraphicsPixmapItem(QPixmap::fromImage(img));
+
+//    mark->setScale((qreal)mark_width / (img.width()));
+//    mark->setPos(cell_size_ * i - mark_width / 2 + 0.3, cell_size_ * j - mark_width / 2 + 0.3);
+
+    QPen pen(Qt::black);
+    QBrush brush(Qt::white);
     if (color == StoneColor::BLACK) {
-        img = QImage(config_->black_stone);
-    }
-    else {
-        img = QImage(config_->white_stone);
+        //pen = QPen(Qt::white);
+        brush = QBrush(Qt::black);
     }
 
-    QGraphicsItem *mark = new QGraphicsPixmapItem(QPixmap::fromImage(img));
-
-    mark->setScale((qreal)mark_width / (img.width()));
-    mark->setPos(cell_size_ * i - mark_width / 2 + 0.3, cell_size_ * j - mark_width / 2 + 0.3);
-
-    board_scene_->addItem(mark);
+    QGraphicsItem *mark = board_scene_->addEllipse(cell_size_ * i - mark_width / 2 + 0.3,
+                                                   cell_size_ * j - mark_width / 2 + 0.3,
+                                                   mark_width,
+                                                   mark_width,
+                                                   pen,
+                                                   brush);
 
     return mark;
 }

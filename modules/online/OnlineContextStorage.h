@@ -32,8 +32,8 @@ public:
     // marks of moves in the tree in current position
     QVector<QGraphicsItem*> marks;
 
-    bool view_marks = true;
-    bool view_last_move_highlight = true;
+    bool view_marks = false;
+    bool view_last_move_highlight = false;
 
     // engine context
     EngineState engine_state = EngineState::STOPPED;
