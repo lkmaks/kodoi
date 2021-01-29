@@ -27,6 +27,7 @@ private:
 
     QHBoxLayout *hlt;
 
+    QLabel *name_label_;
     CreateForm *create_form_;
     std::vector<RoomLabel*> room_labels_;
 

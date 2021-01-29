@@ -26,6 +26,7 @@ namespace Protocol {
     const Value VALUE_METHOD_USER_ENTERED = "user_entered";
     const Value VALUE_METHOD_USER_LEFT = "user_left";
     const Value VALUE_METHOD_ROOM_ADDED = "room_added";
+    const Value VALUE_METHOD_GUEST_NAME = "guest_name";
 
     const Value VALUE_METHOD_LOGIN = "login";
     const Value VALUE_METHOD_ROOMS_LIST = "list";
@@ -49,9 +50,14 @@ namespace Protocol {
 
     const Key KEY_LOGIN_NAME = "login_name";
     const Key KEY_LOGIN_PASSWORD = "login_password";
+    const Key KEY_LOGIN_AS_GUEST = "login_as_guest";
+    const Value VALUE_LOGIN_AS_GUEST_YES = "yes";
+    const Value VALUE_LOGIN_AS_GUEST_NO = "no";
 
     const Key KEY_USER_ENTER_NAME = "user_enter_name";
     const Key KEY_USER_LEAVE_NAME = "user_leave_name";
+
+    const Key KEY_GUEST_NAME = "guest_name";
 
     class Message {
     public:
@@ -72,10 +78,12 @@ namespace Protocol {
         static Message UserEntered(QString name);
         static Message UserLeft(QString name);
         static Message RoomAdded(QString name);
+        static Message GuestName(QString name);
 
 
         // for client
         static Message Login(QString login, QString password);
+        static Message LoginAsGuest();
         static Message RoomsList();
         static Message CreateRoom(RoomId room_id);
         static Message Enter(RoomId room_id);

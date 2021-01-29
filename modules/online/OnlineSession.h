@@ -21,13 +21,19 @@ public:
 
     /// send message
 
-    void RoomsList();
+    void Login(QString name, QString password);
+    void LoginAsGuest();
 
     void CreateRoom(RoomId room_id);
+
     void EnterRoom(RoomId room_id);
-    void LeaveRoom(RoomId room_id);
-    void MakeBoardAction(BoardAction action);
     void NeedInit();
+
+    void MakeBoardAction(BoardAction action);
+
+    void LeaveRoom(RoomId room_id);
+    void RoomsList();
+
 
     /// convinience
     void MakeMove(QPair<int, int> cell, OnlineEpochId epoch_id);
@@ -39,6 +45,7 @@ signals:
     // signals about receiveing messages
     void ReceivedRoomAdded(QString name);
     void ReceivedStatus(QString status);
+    void ReceivedGuestName(QString name);
     void ReceivedInit(BoardAction action);
     void ReceivedUpdate(BoardAction action);
 private:

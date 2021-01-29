@@ -1,14 +1,23 @@
-#include "OnlineClubWidget.h"
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QEventLoop>
+
+#include "OnlineClubWidget.h"
+
 #include "MainWindow.h"
+
 
 OnlineClubWidget::OnlineClubWidget(Config *config, Settings *settings, OnlineSession *session, QWidget *parent) :
     QWidget(parent), config_(config), settings_(settings), session_(session)
 {
     create_form_ = new CreateForm(this);
     QVBoxLayout *vlt = new QVBoxLayout(this);
+
+    name_label_ = new QLabel(settings->name, this);
+
+    vlt->addWidget(name_label_);
+
     vlt->addWidget(create_form_);
 
     hlt = new QHBoxLayout(this);

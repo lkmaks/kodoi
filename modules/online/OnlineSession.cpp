@@ -14,6 +14,14 @@ OnlineSession::OnlineSession(QObject *parent) : QObject(parent)
 }
 
 
+void OnlineSession::Login(QString name, QString password) {
+    SendMessage(Message::Login(name, password));
+}
+
+void OnlineSession::LoginAsGuest() {
+    SendMessage(Message::LoginAsGuest());
+}
+
 void OnlineSession::RoomsList() {
     SendMessage(Message::RoomsList());
 }
@@ -97,6 +105,9 @@ void OnlineSession::SocketReadyRead() {
         }
         else if (method == Protocol::VALUE_METHOD_ROOM_ADDED) {
             emit ReceivedRoomAdded(msg.GetRoomId());
+        }
+        else if (method == Protocol::VALUE_METHOD_GUEST_NAME) {
+            emit ReceivedGuestName(msg[Protocol::KEY_GUEST_NAME]);
         }
     }
 }

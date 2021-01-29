@@ -8,6 +8,7 @@
 
 #include "modules/online/Room/OnlineWidget.h"
 #include "modules/online/Club/OnlineClubWidget.h"
+#include "modules/online/Club/LoginWidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -19,6 +20,7 @@ public:
 
     void EngineSetup();
 
+    void LoginSuccessful(QString name, QString password, bool guest = false);
     void EnterRoom(RoomId);
     void LeaveRoom();
 

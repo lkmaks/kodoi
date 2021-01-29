@@ -45,6 +45,7 @@ SOURCES += \
         modules/explorer/ExplorerMode.cpp \
         modules/explorer/MainWidget.cpp \
         modules/online/Club/CreateForm.cpp \
+        modules/online/Club/LoginWidget.cpp \
         modules/online/Club/OnlineClubWidget.cpp \
         modules/online/Club/RoomLabel.cpp \
         modules/online/Room/LeaveWidget.cpp \
@@ -80,6 +81,7 @@ HEADERS += \
         modules/explorer/ExplorerTools.h \
         modules/explorer/MainWidget.h \
         modules/online/Club/CreateForm.h \
+        modules/online/Club/LoginWidget.h \
         modules/online/Club/OnlineClubWidget.h \
         modules/online/Club/RoomLabel.h \
         modules/online/Room/LeaveWidget.h \

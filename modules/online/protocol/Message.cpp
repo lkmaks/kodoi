@@ -64,10 +64,18 @@ namespace Protocol {
         return Message({{KEY_METHOD, VALUE_METHOD_ROOM_ADDED}, {KEY_ROOM_ID, name}});
     }
 
+    Message Message::GuestName(QString name) {
+        return Message({{KEY_METHOD, VALUE_METHOD_GUEST_NAME}, {KEY_GUEST_NAME, name}});
+    }
+
     // client
 
+    Message Message::LoginAsGuest() {
+        return Message(Dict({{KEY_METHOD, VALUE_METHOD_LOGIN}, {KEY_LOGIN_AS_GUEST, VALUE_LOGIN_AS_GUEST_YES}}));
+    }
+
     Message Message::Login(QString name, QString password) {
-        return Message({{KEY_METHOD, VALUE_METHOD_LOGIN}, {KEY_LOGIN_NAME, name}, {KEY_LOGIN_PASSWORD, password}});
+        return Message({{KEY_LOGIN_AS_GUEST, VALUE_LOGIN_AS_GUEST_NO}, {KEY_METHOD, VALUE_METHOD_LOGIN}, {KEY_LOGIN_NAME, name}, {KEY_LOGIN_PASSWORD, password}});
     }
 
     Message Message::RoomsList() {

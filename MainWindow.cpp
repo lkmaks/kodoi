@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     online_session_ = new OnlineSession();
 
-    cur_widget_ = new OnlineClubWidget(config_, settings_, online_session_);
+    cur_widget_ = new LoginWidget(online_session_);
 
     setCentralWidget(cur_widget_);
     setMinimumSize(1200, 800);
@@ -38,6 +38,17 @@ void MainWindow::EngineSetup() {
         settings_->engine_cmd = text;
         emit SettingsUpdated(SettingsField::ENGINE_CMD);
     }
+}
+
+void MainWindow::LoginSuccessful(QString name, QString password, bool guest) {
+    settings_->name = name;
+    settings_->password = password;
+    settings_->is_guest = guest;
+
+    cur_widget_->close();
+    delete cur_widget_;
+    cur_widget_ = new OnlineClubWidget(config_, settings_, online_session_, this);
+    setCentralWidget(cur_widget_);
 }
 
 void MainWindow::EnterRoom(RoomId room_id) {
